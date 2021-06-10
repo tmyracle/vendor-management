@@ -1,0 +1,26 @@
+{
+  "name": "vendor-management",
+  "version": "1.0.0",
+  "description": "Vendor management software",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^5.3.0"
+  },
+  "scripts": {
+    "build": "cd client && npm install && npm run build && cd ..",
+    "deploy": "cp -a client/build/. public/",
+    "postinstall": "npm run build && npm run deploy && echo 'Client built!'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmyracle/vendor-management.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tmyracle/vendor-management/issues"
+  },
+  "homepage": "https://github.com/tmyracle/vendor-management#readme"
+}
