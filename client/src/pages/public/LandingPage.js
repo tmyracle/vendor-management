@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from "react";
 import "./public.css";
 import { Fragment } from "react";

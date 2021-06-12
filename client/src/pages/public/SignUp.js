@@ -27,20 +27,8 @@ export default function SignUp() {
     setConfirmPassword(e.target.value);
   };
 
-  const verifyPasswordsMatch = () => {
-    if (password !== confirmPassword) {
-      setErrorMessagePasswordMatch("Passwords do not match.");
-      setIsButtonDisabled(true);
-      return;
-    } else {
-      setErrorMessagePasswordMatch("");
-      setIsButtonDisabled(false);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    verifyPasswordsMatch();
     const signUpPayload = {
       full_name: fullName,
       email: email,
@@ -66,8 +54,17 @@ export default function SignUp() {
   };
 
   useEffect(() => {
-    verifyPasswordsMatch();
-  }, [confirmPassword]);
+    if (!password) {
+      setIsButtonDisabled(true);
+    } else if (confirmPassword && password !== confirmPassword) {
+      setErrorMessagePasswordMatch("Passwords do not match.");
+      setIsButtonDisabled(true);
+      return;
+    } else {
+      setErrorMessagePasswordMatch("");
+      setIsButtonDisabled(false);
+    }
+  }, [password, confirmPassword]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -165,7 +162,6 @@ export default function SignUp() {
                   name="confirmPassword"
                   type="password"
                   onChange={handleConfirmPasswordChange}
-                  onBlur={verifyPasswordsMatch}
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />

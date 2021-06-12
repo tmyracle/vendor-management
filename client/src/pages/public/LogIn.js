@@ -52,7 +52,10 @@ export default function LogIn() {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Or{" "}
-          <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+          <a
+            href="/signup"
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
             start your 30-day free trial
           </a>
         </p>
@@ -125,7 +128,7 @@ export default function LogIn() {
 
               <div className="text-sm">
                 <a
-                  href="#"
+                  href="/forgot_password"
                   className="font-medium text-blue-600 hover:text-blue-500"
                 >
                   Forgot your password?
