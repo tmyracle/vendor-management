@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
     const initAuth = async () => {
       try {
         const res = await axios.get("/api/v1/auto_login", withToken());
-        console.log(res);
         const isAuthenticatedStatus = res.data.isAuthenticated;
         setIsAuthenticated(isAuthenticatedStatus);
         if (isAuthenticatedStatus === true) {

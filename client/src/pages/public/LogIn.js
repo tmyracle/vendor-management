@@ -24,8 +24,6 @@ export default function LogIn() {
     try {
       const res = await axios.post("/api/v1/login", payload);
       if (res.status === 200) {
-        console.log("Successful login!");
-        console.log(res);
         const { token } = res.data;
         localStorage.setItem("token", token);
         window.location.replace("/dashboard");
