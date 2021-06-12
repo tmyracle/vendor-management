@@ -11,10 +11,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const res = await axios.get(
-          "/api/v1/user/is_authenticated",
-          withToken()
-        );
+        const res = await axios.get("/api/v1/auto_login", withToken());
+        console.log(res);
         const isAuthenticatedStatus = res.data.isAuthenticated;
         setIsAuthenticated(isAuthenticatedStatus);
         if (isAuthenticatedStatus === true) {

@@ -14,10 +14,7 @@ const AuthenticatedApp = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(
-          "/api/v1/user/is_authenticated",
-          withToken()
-        );
+        const res = await axios.get("/api/v1/auto_login", withToken());
         if (res.data.isAuthenticated) {
           setUser(res.data.user);
         }
