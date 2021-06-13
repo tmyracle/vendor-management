@@ -4,10 +4,16 @@ module Api::V1
 
     # REGISTER
     def create
-      @user = User.create(user_params)
+      @user = User.create(user_params.except(:company_name))
+
+      if user_params.has_key?(:company_name)
+        @company = Company.create(name: user_params[:company_name])
+        @user.companies << @company
+      end
+
       if @user.valid?
         token = encode_token({user_id: @user.id})
-        render json: {user: @user, token: token}
+        render json: {user: @user.as_json(include: [:companies]), token: token}
       else
         render json: {error: "Invalid email or password"}
       end
@@ -19,20 +25,20 @@ module Api::V1
   
       if @user && @user.authenticate(params[:password])
         token = encode_token({user_id: @user.id})
-        render json: {user: @user, token: token}
+        render json: {user: @user.as_json(include: [:companies]), token: token}
       else
         render json: {error: "Invalid email or password"}
       end
     end
   
     def auto_login
-      render json: {user: @user.as_json.except("password_digest"), isAuthenticated: true}
+      render json: {user: @user.as_json(include: [:companies]).except("password_digest"), isAuthenticated: true}
     end
   
     private
   
     def user_params
-      params.permit(:full_name, :email, :password)
+      params.permit(:full_name, :email, :password, :company_name)
     end
   end
 end

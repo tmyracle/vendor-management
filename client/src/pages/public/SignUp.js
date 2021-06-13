@@ -4,6 +4,7 @@ import axios from "axios";
 export default function SignUp() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -19,6 +20,10 @@ export default function SignUp() {
     setEmail(e.target.value);
   };
 
+  const handleCompanyNameChange = (e) => {
+    setCompanyName(e.target.value);
+  };
+
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
@@ -32,6 +37,7 @@ export default function SignUp() {
     const signUpPayload = {
       full_name: fullName,
       email: email,
+      company_name: companyName,
       password: password,
     };
 
@@ -123,6 +129,25 @@ export default function SignUp() {
                   type="email"
                   autoComplete="email"
                   onChange={handleEmailChange}
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="companyName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Company name
+              </label>
+              <div className="mt-1">
+                <input
+                  id="companyName"
+                  name="companyName"
+                  type="text"
+                  onChange={handleCompanyNameChange}
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
