@@ -328,7 +328,7 @@ export default function LandingPage() {
                 </Popover.Group>
                 <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
                   <a
-                    href="/login"
+                    href="/signin"
                     className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900"
                   >
                     Sign in
@@ -425,8 +425,8 @@ export default function LandingPage() {
                           Sign up
                         </a>
                         <p className="mt-6 text-center text-base font-medium text-gray-500">
-                          Existing customer?
-                          <a href="#" className="text-gray-900">
+                          Existing customer?{" "}
+                          <a href="/signin" className="text-gray-900">
                             Sign in
                           </a>
                         </p>

@@ -6,7 +6,7 @@ import LandingPage from "./pages/public/LandingPage";
 import About from "./pages/public/About";
 import Features from "./pages/public/Features";
 import Pricing from "./pages/public/Pricing";
-import LogIn from "./pages/public/LogIn";
+import SignIn from "./pages/public/SignIn";
 import SignUp from "./pages/public/SignUp";
 import AuthenticatedApp from "./AuthenticatedApp";
 import { useAuth } from "./lib/authHandler";
@@ -20,8 +20,8 @@ const App = () => {
       {isAuthenticated === false && (
         <Router>
           <Switch>
-            <Route path="/login">
-              <LogIn />
+            <Route path="/signin">
+              <SignIn />
             </Route>
             <Route path="/signup">
               <SignUp />
