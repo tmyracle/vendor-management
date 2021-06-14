@@ -45,18 +45,3 @@ const Team = (props) => {
 };
 
 export default Team;
-
-/*
-<div>
-{company.users.map((user) => (
-  <p>
-    {user.full_name} - {user.email} -{" "}
-    {new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "2-digit",
-    }).format(new Date(user.created_at))}
-  </p>
-))}
-</div>
-*/

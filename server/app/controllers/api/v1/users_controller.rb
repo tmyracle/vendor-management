@@ -13,6 +13,7 @@ module Api::V1
 
       if @user.valid?
         token = encode_token({user_id: @user.id})
+        UserNotifierMailer.send_signup_email(@user).deliver
         render json: {user: @user.as_json(include: [:companies]), token: token}
       else
         render json: {error: "Invalid email or password"}
