@@ -72,7 +72,7 @@ const Navigation = withRouter((props) => {
                 {props.user.full_name}
               </p>
               <p className="text-xs font-medium text-gray-300 group-hover:text-gray-200">
-                View profile
+                {props.user.companies[0].name}
               </p>
             </div>
           </div>

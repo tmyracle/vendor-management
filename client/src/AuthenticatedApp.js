@@ -60,7 +60,6 @@ export default function AuthenticatedApp() {
         const res = await axios.get("/api/v1/auto_login", withToken());
         if (res.data.isAuthenticated) {
           setUser(res.data.user);
-          console.log(res.data.user);
         }
       } catch (error) {
         console.log(error);
