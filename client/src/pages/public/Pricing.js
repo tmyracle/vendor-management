@@ -523,7 +523,7 @@ export default function Pricing() {
                 </Popover.Group>
                 <div className="hidden md:flex items-center justify-end space-x-8 md:flex-1 lg:w-0">
                   <a
-                    href="/login"
+                    href="/signin"
                     className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900"
                   >
                     Sign in
@@ -639,7 +639,7 @@ export default function Pricing() {
                       <p className="text-center text-base font-medium text-gray-500">
                         Existing customer?{" "}
                         <a
-                          href="/login"
+                          href="/signin"
                           className="text-blue-600 hover:text-blue-500"
                         >
                           Sign in

@@ -7,3 +7,5 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 user = User.create(full_name: "Tyler Myracle", email: "tmmyracle@gmail.com", password: "password123")
+company = Company.create(name: "Protocol")
+company.users << user

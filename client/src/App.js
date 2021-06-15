@@ -8,6 +8,8 @@ import Features from "./pages/public/Features";
 import Pricing from "./pages/public/Pricing";
 import SignIn from "./pages/public/SignIn";
 import SignUp from "./pages/public/SignUp";
+import ForgotPassword from "./pages/public/ForgotPassword"
+import ResetPassword from "./pages/public/ResetPassword"
 import AuthenticatedApp from "./AuthenticatedApp";
 import { useAuth } from "./lib/authHandler";
 
@@ -34,6 +36,12 @@ const App = () => {
             </Route>
             <Route path="/about">
               <About />
+            </Route>
+            <Route path="/forgot_password">
+              <ForgotPassword />
+            </Route>
+            <Route path="/reset_password">
+              <ResetPassword />
             </Route>
             <Route path="/">
               <LandingPage />
