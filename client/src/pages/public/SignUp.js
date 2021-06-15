@@ -45,7 +45,6 @@ export default function SignUp() {
       console.log(signUpPayload);
       const res = await axios.post("/api/v1/users", signUpPayload);
       if (res.status === 200) {
-        console.log("Successful user creation!");
         const { token } = res.data;
         localStorage.setItem("token", token);
         window.location.replace("/dashboard");

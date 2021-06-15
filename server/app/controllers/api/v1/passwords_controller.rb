@@ -7,7 +7,6 @@ module Api::V1
       end
   
       user = User.find_by(email: params[:email]) # if present find user by email
-      puts user
   
       if user.present?
         user.generate_password_token! #generate pass token
