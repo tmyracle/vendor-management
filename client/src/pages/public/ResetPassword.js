@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router";
 import axios from "axios";
 
 export default function ResetPassword() {
-  const [token, setToken] = useState("")
+  const {token} = useParams();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);

@@ -40,9 +40,7 @@ const App = () => {
             <Route path="/forgot_password">
               <ForgotPassword />
             </Route>
-            <Route path="/reset_password">
-              <ResetPassword />
-            </Route>
+            <Route path="/reset_password/:token" children={<ResetPassword />} />
             <Route path="/">
               <LandingPage />
             </Route>

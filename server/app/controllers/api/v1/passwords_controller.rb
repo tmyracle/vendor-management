@@ -18,12 +18,12 @@ module Api::V1
       end
     end
   
-    def reset
-      token = params[:token].to_s
-  
-      if params[:email].blank?
+    def reset      
+      if params[:token].blank?
         return render json: {error: 'Token not present'}
       end
+
+      token = params[:token].to_s
   
       user = User.find_by(reset_password_token: token)
   
