@@ -29,7 +29,7 @@ export default function ResetPassword() {
     try {
       const res = await axios.post("/api/v1/password/reset", payload);
       if (res.status === 200) {
-        window.location.replace("/sign_in");
+        window.location.replace("/signin");
       }
     } catch (err) {
       if (err.response.data.message) {
