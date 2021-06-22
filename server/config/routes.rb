@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       get "/auto_login", to: "users#auto_login"
       post "/password/forgot", to: "passwords#forgot"
       post "/password/reset", to: "passwords#reset"
+      post "/invite", to: "invitations#invite"
     end
   end
 
