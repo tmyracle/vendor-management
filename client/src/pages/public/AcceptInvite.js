@@ -1,28 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router";
 import axios from "axios";
 
-export default function SignUp() {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [companyName, setCompanyName] = useState("");
+export default function ResetPassword() {
+  const {token} = useParams();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("")
   const [errorMessagePasswordMatch, setErrorMessagePasswordMatch] =
     useState("");
-
-  const handleFullNameChange = (e) => {
-    setFullName(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handleCompanyNameChange = (e) => {
-    setCompanyName(e.target.value);
-  };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
@@ -34,19 +21,15 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const signUpPayload = {
-      full_name: fullName,
-      email: email,
-      company_name: companyName,
-      password: password,
-    };
+    const payload = {
+        token: token,
+        password: password
+    }
 
     try {
-      const res = await axios.post("/api/v1/users", signUpPayload);
+      const res = await axios.post("/api/v1/invite/accept", payload);
       if (res.status === 200) {
-        const { token } = res.data;
-        localStorage.setItem("token", token);
-        window.location.replace("/dashboard");
+        window.location.replace("/signin");
       }
     } catch (err) {
       if (err.response.data.message) {
@@ -81,78 +64,23 @@ export default function SignUp() {
           />
         </a>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Create your account
+          Set your password
         </h2>
       </div>
 
+      {errorMessage ? (
+        <div className="text-red-500">{errorMessage}</div>
+      ) : (
+        <></>
+      )}
+
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <div className="mb-4 text-gray-700 text-sm">
+          Enter your new password
+          </div>
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {errorMessage ? (
-              <div className="text-red-500">{errorMessage}</div>
-            ) : (
-              <></>
-            )}
-            <div>
-              <label
-                htmlFor="fullName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Full name
-              </label>
-              <div className="mt-1">
-                <input
-                  id="fullName"
-                  name="fullName"
-                  type="text"
-                  autoComplete="fullName"
-                  onChange={handleFullNameChange}
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  onChange={handleEmailChange}
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="companyName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Company name
-              </label>
-              <div className="mt-1">
-                <input
-                  id="companyName"
-                  name="companyName"
-                  type="text"
-                  onChange={handleCompanyNameChange}
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-              </div>
-            </div>
-
-            <div>
+          <div>
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
@@ -202,10 +130,9 @@ export default function SignUp() {
               <button
                 type="submit"
                 disabled={isButtonDisabled}
-                id="signUpButton"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Sign up
+                Continue
               </button>
             </div>
           </form>

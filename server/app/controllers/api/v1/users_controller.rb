@@ -28,7 +28,7 @@ module Api::V1
         token = encode_token({user_id: @user.id})
         render json: {user: @user.as_json(include: [:companies]), token: token}
       else
-        render json: {error: "Invalid email or password"}
+        render json: {error: "Invalid email or password"}, status: :forbidden
       end
     end
   

@@ -10,6 +10,7 @@ import SignIn from "./pages/public/SignIn";
 import SignUp from "./pages/public/SignUp";
 import ForgotPassword from "./pages/public/ForgotPassword"
 import ResetPassword from "./pages/public/ResetPassword"
+import AcceptInvite from "./pages/public/AcceptInvite"
 import AuthenticatedApp from "./AuthenticatedApp";
 import { useAuth } from "./lib/authHandler";
 
@@ -41,6 +42,7 @@ const App = () => {
               <ForgotPassword />
             </Route>
             <Route path="/reset_password/:token" children={<ResetPassword />} />
+            <Route path="/invite/:token" children={<AcceptInvite />} />
             <Route path="/">
               <LandingPage />
             </Route>

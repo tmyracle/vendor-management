@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       post "/password/forgot", to: "passwords#forgot"
       post "/password/reset", to: "passwords#reset"
       post "/invite", to: "invitations#invite"
+      post "/invite/accept", to: "invitations#accept"
     end
   end
 
