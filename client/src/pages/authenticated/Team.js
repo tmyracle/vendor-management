@@ -96,7 +96,11 @@ const Team = (props) => {
         </button>
       </div>
       {!company.users ? null : (
-        <StripedTable columnNames={columnNames} tableData={company.users} />
+        <StripedTable
+          columnNames={columnNames}
+          tableData={company.users}
+          dataEditable={false}
+        />
       )}
 
       <Transition.Root show={inviteModalOpen} as={Fragment}>

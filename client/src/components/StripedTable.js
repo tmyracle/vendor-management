@@ -3,6 +3,7 @@ import React from "react";
 const StripedTable = (props) => {
   const columnNames = props.columnNames;
   const tableData = props.tableData;
+  const dataEditable = props.dataEditable;
 
   const formatField = (data, dataType) => {
     let formattedData = data;
@@ -35,9 +36,11 @@ const StripedTable = (props) => {
                       {columnName.displayName}
                     </th>
                   ))}
-                  <th scope="col" className="relative px-6 py-3">
-                    <span className="sr-only">Edit</span>
-                  </th>
+                  {dataEditable ? (
+                    <th scope="col" className="relative px-6 py-3">
+                      <span className="sr-only">Edit</span>
+                    </th>
+                  ) : null}
                 </tr>
               </thead>
               <tbody>
@@ -60,14 +63,16 @@ const StripedTable = (props) => {
                         )}
                       </td>
                     ))}
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a
-                        href="/dashboard"
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        Edit
-                      </a>
-                    </td>
+                    {dataEditable ? (
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a
+                          href="/dashboard"
+                          className="text-indigo-600 hover:text-indigo-900"
+                        >
+                          Edit
+                        </a>
+                      </td>
+                    ) : null}
                   </tr>
                 ))}
               </tbody>
