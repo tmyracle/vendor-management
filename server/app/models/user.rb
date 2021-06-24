@@ -14,6 +14,7 @@ class User < ApplicationRecord
   end
 
   def reset_password!(password)
+    puts "This is the password: #{password}"
     self.reset_password_token = nil
     self.password = password
     save!

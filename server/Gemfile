@@ -17,6 +17,7 @@ gem 'puma', '~> 4.1'
 gem 'bcrypt', '~> 3.1.7'
 gem 'jwt'
 gem 'sendgrid-ruby'
+gem 'email_validator'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'

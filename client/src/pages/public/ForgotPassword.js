@@ -3,8 +3,8 @@ import axios from "axios";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [errorMessage, setErrorMessage] = useState("")
-  const [formSubmitted, setFormSubmitted] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("");
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -14,9 +14,10 @@ export default function ForgotPassword() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("/api/v1/password/forgot", {email: email});
+      const res = await axios.post("/api/v1/password/forgot", { email: email });
       if (res.status === 200) {
-        setFormSubmitted(true)
+        setErrorMessage("");
+        setFormSubmitted(true);
       }
     } catch (err) {
       if (err.response.data.message) {
@@ -53,7 +54,8 @@ export default function ForgotPassword() {
           {!formSubmitted ? (
             <div>
               <div className="mb-4 text-gray-700 text-sm">
-                Enter the email address associated with your account and we'll send you a link to reset your password.
+                Enter the email address associated with your account and we'll
+                send you a link to reset your password.
               </div>
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
