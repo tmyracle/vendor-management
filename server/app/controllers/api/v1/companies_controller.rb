@@ -4,7 +4,7 @@ module Api::V1
     before_action :set_company, only: [:show, :update, :destroy]
 
     def show
-      render json: {company: @company.as_json(include: [users: {except: :password_digest}])}
+      render json: {company: @company.as_json(include: [users: {except: :password_digest, methods: [:status]}])}
     end
 
     private

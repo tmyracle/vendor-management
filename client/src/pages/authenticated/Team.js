@@ -17,6 +17,7 @@ const Team = (props) => {
     { displayName: "Name", field: "full_name", dataType: "text" },
     { displayName: "Email", field: "email", dataType: "text" },
     { displayName: "Joined", field: "created_at", dataType: "date" },
+    { displayName: "Status", field: "status", dataType: "uppercaseText" },
   ];
 
   const toggleInviteModal = () => {

@@ -3,6 +3,20 @@ class User < ApplicationRecord
   has_and_belongs_to_many :companies
   has_many :invitations
 
+  attribute :status
+
+  
+  def status
+    current_company = self.companies.first
+    if self.invitations.present? && self.invitations.where(invite_company: current_company.id).present?
+      latest_invite = self.invitations.where(invite_company: current_company.id).last
+      latest_invite.invite_accepted_at.nil? ? (return "pending") : (return "active")
+    else
+      return "active"
+    end
+  end
+
+
   def generate_password_token!
     self.reset_password_token = generate_token
     self.reset_password_sent_at = Time.now.utc

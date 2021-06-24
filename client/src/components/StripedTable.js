@@ -12,6 +12,8 @@ const StripedTable = (props) => {
         month: "long",
         day: "2-digit",
       }).format(new Date(data));
+    } else if (dataType === "uppercaseText") {
+      formattedData = data.charAt(0).toUpperCase() + data.slice(1);
     }
     return formattedData;
   };
