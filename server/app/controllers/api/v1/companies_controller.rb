@@ -14,6 +14,13 @@ module Api::V1
       render json: company.as_json(methods: :logo_url)
     end
 
+    def update
+      if params[:logo].present?
+        @company.logo.attach(params[:logo]) if !!@company
+        render json: @company.as_json(methods: :logo_url)
+      end
+    end
+
     private
       def set_company
         @company = Company.find(params[:id])
