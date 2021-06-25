@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :api do
     namespace :v1 do
-      resources :companies, only: [:show]
+      resources :companies, only: [:show, :create]
       resource :users, only: [:create]
       post "/login", to: "users#login"
       get "/auto_login", to: "users#auto_login"
@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       post "/password/reset", to: "passwords#reset"
       post "/invite", to: "invitations#invite"
       post "/invite/accept", to: "invitations#accept"
+      post "/presigned_url", to: "direct_upload#create"
     end
   end
 

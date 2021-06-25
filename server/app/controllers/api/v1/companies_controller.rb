@@ -7,13 +7,20 @@ module Api::V1
       render json: {company: @company.as_json(include: [users: {except: :password_digest, methods: [:status]}])}
     end
 
+    def create
+      logo = params[:logo]
+      company = Company.create!(name: params[:name])
+      company.logo.attach(logo) if logo.present? && !!company
+      render json: company.as_json(methods: :logo_url)
+    end
+
     private
       def set_company
         @company = Company.find(params[:id])
       end
 
       def company_params
-        params.require(:name).permit(:id, :name)
+        params.require(:name).permit(:id, :name, :logo)
       end 
   end
 end
