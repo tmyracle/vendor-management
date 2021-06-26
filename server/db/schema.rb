@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_25_001633) do
+ActiveRecord::Schema.define(version: 2021_06_26_063015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,20 @@ ActiveRecord::Schema.define(version: 2021_06_25_001633) do
     t.bigint "company_id", null: false
   end
 
+  create_table "contacts", force: :cascade do |t|
+    t.bigint "vendor_id", null: false
+    t.string "name"
+    t.string "primary_phone"
+    t.string "secondary_phone"
+    t.string "email"
+    t.string "title"
+    t.text "notes"
+    t.integer "company_owner"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["vendor_id"], name: "index_contacts_on_vendor_id"
+  end
+
   create_table "invitations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.integer "invited_by"
@@ -70,6 +84,15 @@ ActiveRecord::Schema.define(version: 2021_06_25_001633) do
     t.datetime "reset_password_sent_at"
   end
 
+  create_table "vendors", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "website"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "contacts", "vendors"
   add_foreign_key "invitations", "users"
 end
