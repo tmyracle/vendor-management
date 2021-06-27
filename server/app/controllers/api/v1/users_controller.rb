@@ -33,7 +33,7 @@ module Api::V1
     end
   
     def auto_login
-      render json: {user: @user.as_json(include: [:companies]).except("password_digest"), isAuthenticated: true}
+      render json: {user: @user.as_json(include: [{:companies => {methods: :logo_url}}]).except("password_digest"), isAuthenticated: true}
     end
   
     private

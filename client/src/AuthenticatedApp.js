@@ -9,10 +9,10 @@ import {
 } from "react-router-dom";
 import {
   BellIcon,
-  FolderIcon,
   HomeIcon,
   MenuAlt2Icon,
   UsersIcon,
+  BriefcaseIcon,
   XIcon,
 } from "@heroicons/react/outline";
 import { SearchIcon } from "@heroicons/react/solid";
@@ -22,18 +22,19 @@ import MobileNavigation from "./components/MobileNavigation";
 import Dashboard from "./pages/authenticated/Dashboard";
 import Team from "./pages/authenticated/Team";
 import Projects from "./pages/authenticated/Projects";
-import Profile from "./pages/authenticated/Profile";
+import FileUploadTest from "./pages/authenticated/FileUploadTest"
+import Vendors from "./pages/authenticated/Vendors"
 import { withToken } from "./lib/authHandler";
 
 const navigation = [
   { name: "Dashboard", icon: HomeIcon, href: "/dashboard", current: true },
-  { name: "Team", icon: UsersIcon, href: "/team", current: false },
   {
-    name: "Projects",
-    icon: FolderIcon,
-    href: "/projects",
+    name: "Vendors",
+    icon: BriefcaseIcon,
+    href: "/vendors",
     current: false,
   },
+  { name: "Team", icon: UsersIcon, href: "/team", current: false },
 ];
 
 const userNavigation = [
@@ -263,14 +264,17 @@ export default function AuthenticatedApp() {
                   <Route path="/dashboard">
                     <Dashboard user={user} />
                   </Route>
+                  <Route path="/vendors">
+                    <Vendors />
+                  </Route>
                   <Route path="/team">
                     <Team user={user} />
                   </Route>
                   <Route path="/projects">
                     <Projects />
                   </Route>
-                  <Route path="/profile">
-                    <Profile />
+                  <Route path="/file_upload_test">
+                    <FileUploadTest />
                   </Route>
                   <Route path="/*">
                     <Redirect to="/dashboard" />
