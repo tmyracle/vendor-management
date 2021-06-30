@@ -22,8 +22,8 @@ import MobileNavigation from "./components/MobileNavigation";
 import Dashboard from "./pages/authenticated/Dashboard";
 import Team from "./pages/authenticated/Team";
 import Projects from "./pages/authenticated/Projects";
-import FileUploadTest from "./pages/authenticated/FileUploadTest"
-import Vendors from "./pages/authenticated/Vendors"
+import FileUploadTest from "./pages/authenticated/FileUploadTest";
+import Vendors from "./pages/authenticated/Vendors";
 import { withToken } from "./lib/authHandler";
 
 const navigation = [
@@ -257,8 +257,8 @@ export default function AuthenticatedApp() {
           </div>
 
           <main className="flex-1 relative overflow-y-auto focus:outline-none">
-            <div className="py-6">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+            <div>
+              <div className="mx-auto">
                 {/* Replace with your content */}
                 <Switch>
                   <Route path="/dashboard">

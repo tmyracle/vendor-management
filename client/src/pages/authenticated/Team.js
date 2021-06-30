@@ -81,7 +81,7 @@ const Team = (props) => {
   }, [company.id, fetchCompany]);
 
   return (
-    <div className="p-2">
+    <div className="p-8 max-w-7xl mx-auto">
       <h1 className="mb-4 text-3xl font-extrabold text-gray-900">
         {company.name}
       </h1>
