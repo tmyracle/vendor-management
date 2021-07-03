@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { withToken } from "../lib/authHandler";
 import axios from "axios";
-import { SearchIcon } from "@heroicons/react/solid";
+import { SearchIcon, PlusCircleIcon } from "@heroicons/react/solid";
 
 const VendorList = (props) => {
   const [vendors, setVendors] = useState(props.vendors);
@@ -40,16 +40,31 @@ const VendorList = (props) => {
       }
     };
     queryVendors();
-  }, [queryTerm]);
+  }, [queryTerm, props.vendors]);
 
   return (
     <aside className="hidden xl:order-first xl:flex xl:flex-col flex-shrink-0 w-96 border-r border-gray-200">
       <div className="px-6 pt-6 pb-4">
-        <h2 className="text-lg font-medium text-gray-900">Vendors</h2>
-        <p className="mt-1 text-sm text-gray-600">
+        <div>
+          <h2 className="text-lg w-1/2 inline font-medium text-gray-900">
+            Vendors
+          </h2>
+          <button
+            type="button"
+            onClick={props.toggleAddVendorModal}
+            className="inline-flex float-right items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <PlusCircleIcon
+              className="-ml-0.5 mr-2 h-4 w-4"
+              aria-hidden="true"
+            />
+            Add vendor
+          </button>
+        </div>
+        <p className="mt-4 text-sm text-gray-600">
           Search directory of vendors
         </p>
-        <form className="mt-6 flex space-x-4" action="#">
+        <form className="mt-2 flex space-x-4" action="#">
           <div className="flex-1 min-w-0">
             <label htmlFor="search" className="sr-only">
               Search
