@@ -1,18 +1,46 @@
-import React, { useState } from "react";
-import { FilterIcon, SearchIcon } from "@heroicons/react/solid";
+import React, { useState, useEffect } from "react";
+import { withToken } from "../lib/authHandler";
+import axios from "axios";
+import { SearchIcon } from "@heroicons/react/solid";
 
 const VendorList = (props) => {
   const [vendors, setVendors] = useState(props.vendors);
+  const [queryTerm, setQueryTerm] = useState("");
+
+  const getVendorInitials = (vendor) => {
+    const words = vendor.name.split(" ");
+    if (words.length > 1) {
+      return `${words[0][0].toUpperCase() + words[1][0].toUpperCase()}`;
+    } else {
+      return words[0][0];
+    }
+  };
+
+  const handleQueryTermChange = (e) => {
+    setQueryTerm(e.target.value);
+  };
 
   const showVendorProfile = () => {
     // TODO: Add this to pass vendor to detail page
     return null;
   };
 
-  const handleVendorQuery = () => {
-    // TODO Get vendors with search term
-    setVendors();
-  };
+  useEffect(() => {
+    const queryVendors = async () => {
+      try {
+        let config = withToken();
+        config.params = { query_term: queryTerm };
+
+        const res = await axios.get("/api/v1/vendor_list", config);
+        if (res.status === 200) {
+          setVendors(res.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    queryVendors();
+  }, [queryTerm]);
 
   return (
     <aside className="hidden xl:order-first xl:flex xl:flex-col flex-shrink-0 w-96 border-r border-gray-200">
@@ -35,64 +63,60 @@ const VendorList = (props) => {
               </div>
               <input
                 type="search"
-                name="search"
-                id="search"
-                className="focus:ring-pink-500 focus:border-pink-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                name="queryTerm"
+                id="queryTerm"
+                onChange={handleQueryTermChange}
+                className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                 placeholder="Search"
               />
             </div>
           </div>
-          <button
-            type="submit"
-            onClick={handleVendorQuery}
-            className="inline-flex justify-center px-3.5 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
-          >
-            <FilterIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-            <span className="sr-only">Search</span>
-          </button>
         </form>
       </div>
       {/* Directory list */}
-      <nav className="flex-1 min-h-0 overflow-y-auto" aria-label="Directory">
-        {Object.keys(vendors).map((letter) => (
-          <div key={letter} className="relative">
-            <div className="z-10 sticky top-0 border-t border-b border-gray-200 bg-gray-50 px-6 py-1 text-sm font-medium text-gray-500">
-              <h3>{letter}</h3>
+      {vendors ? (
+        <nav className="flex-1 min-h-0 overflow-y-auto" aria-label="Directory">
+          {Object.keys(vendors).map((letter) => (
+            <div key={letter} className="relative">
+              <div className="z-10 sticky top-0 border-t border-b border-gray-200 bg-gray-50 px-6 py-1 text-sm font-medium text-gray-500">
+                <h3>{letter}</h3>
+              </div>
+              <ul className="relative z-0 divide-y divide-gray-200">
+                {vendors[letter].map((vendor) => (
+                  <li key={vendor.id}>
+                    <div className="relative px-6 py-5 flex items-center space-x-3 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500">
+                      <div className="flex-shrink-0">
+                        <div className="h-10 w-10 flex rounded-full bg-gray-200 text-center justify-center items-center">
+                          <span>{getVendorInitials(vendor)}</span>
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <a
+                          href="#"
+                          onClick={showVendorProfile}
+                          className="focus:outline-none"
+                        >
+                          {/* Extend touch target to entire panel */}
+                          <span
+                            className="absolute inset-0"
+                            aria-hidden="true"
+                          />
+                          <p className="text-sm font-medium text-gray-900">
+                            {vendor.name}
+                          </p>
+                          <p className="text-sm text-gray-500 truncate">
+                            {vendor.description}
+                          </p>
+                        </a>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="relative z-0 divide-y divide-gray-200">
-              {vendors[letter].map((person) => (
-                <li key={person.id}>
-                  <div className="relative px-6 py-5 flex items-center space-x-3 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-pink-500">
-                    <div className="flex-shrink-0">
-                      <img
-                        className="h-10 w-10 rounded-full"
-                        src={person.imageUrl}
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <a
-                        href="#"
-                        onClick={showVendorProfile}
-                        className="focus:outline-none"
-                      >
-                        {/* Extend touch target to entire panel */}
-                        <span className="absolute inset-0" aria-hidden="true" />
-                        <p className="text-sm font-medium text-gray-900">
-                          {person.name}
-                        </p>
-                        <p className="text-sm text-gray-500 truncate">
-                          {person.role}
-                        </p>
-                      </a>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </nav>
+          ))}
+        </nav>
+      ) : null}
     </aside>
   );
 };

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       post "/invite", to: "invitations#invite"
       post "/invite/accept", to: "invitations#accept"
       post "/presigned_url", to: "direct_upload#create"
+      get "/vendor_list", to: "vendors#vendor_list"
     end
   end
 

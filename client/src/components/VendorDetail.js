@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { ChevronLeftIcon, MailIcon, PhoneIcon } from "@heroicons/react/solid";
 
 const tabs = [
   { name: "Profile", href: "#", current: true },
-  { name: "Calendar", href: "#", current: false },
-  { name: "Recognition", href: "#", current: false },
+  { name: "Documents", href: "#", current: false },
+  { name: "Contacts", href: "#", current: false },
 ];
 const profile = {
   name: "Ricardo Cooper",
@@ -62,6 +62,8 @@ function classNames(...classes) {
 }
 
 const VendorDetail = (props) => {
+  const [vendor, setVendor] = useState(props.vendor);
+
   return (
     <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last">
       {/* Breadcrumb */}
@@ -109,7 +111,7 @@ const VendorDetail = (props) => {
                 <div className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
                   <button
                     type="button"
-                    className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                    className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     <MailIcon
                       className="-ml-1 mr-2 h-5 w-5 text-gray-400"
@@ -119,7 +121,7 @@ const VendorDetail = (props) => {
                   </button>
                   <button
                     type="button"
-                    className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                    className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     <PhoneIcon
                       className="-ml-1 mr-2 h-5 w-5 text-gray-400"
@@ -149,7 +151,7 @@ const VendorDetail = (props) => {
                     href={tab.href}
                     className={classNames(
                       tab.current
-                        ? "border-pink-500 text-gray-900"
+                        ? "border-blue-500 text-gray-900"
                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
                       "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                     )}
@@ -191,7 +193,7 @@ const VendorDetail = (props) => {
             {team.map((person) => (
               <div
                 key={person.handle}
-                className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-pink-500"
+                className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
               >
                 <div className="flex-shrink-0">
                   <img
