@@ -14,9 +14,9 @@ module Api::V1
       if @user.valid?
         token = encode_token({user_id: @user.id})
         UserNotifierMailer.send_signup_email(@user).deliver
-        render json: {user: @user.as_json(include: [:companies]), token: token}
+        render json: {user: @user.as_json(include: [:companies]), token: token}, status: :ok
       else
-        render json: {error: "Invalid email or password"}
+        render json: {error: "Invalid email or password"}, status: :internal_server_error
       end
     end
   
@@ -26,9 +26,9 @@ module Api::V1
   
       if @user && @user.authenticate(params[:password])
         token = encode_token({user_id: @user.id})
-        render json: {user: @user.as_json(include: [:companies]), token: token}
+        render json: {user: @user.as_json(include: [:companies]), token: token}, status: :ok
       else
-        render json: {message: "Invalid email or password"}, status: 500
+        render json: {message: "Invalid email or password"}, status: :unauthorized
       end
     end
   
