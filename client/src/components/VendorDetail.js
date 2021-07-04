@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { ChevronLeftIcon, MailIcon, PhoneIcon } from "@heroicons/react/solid";
+import {
+  ChevronLeftIcon,
+  MailIcon,
+  PencilAltIcon,
+} from "@heroicons/react/solid";
 
 const tabs = [
   { name: "Profile", href: "#", current: true },
@@ -123,11 +127,11 @@ const VendorDetail = (props) => {
                     type="button"
                     className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
-                    <PhoneIcon
+                    <PencilAltIcon
                       className="-ml-1 mr-2 h-5 w-5 text-gray-400"
                       aria-hidden="true"
                     />
-                    <span>Call</span>
+                    <span>Edit</span>
                   </button>
                 </div>
               </div>
