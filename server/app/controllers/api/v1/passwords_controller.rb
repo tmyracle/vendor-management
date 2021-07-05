@@ -3,7 +3,7 @@ module Api::V1
     before_action :authorized, except: [:forgot, :reset]
     def forgot
       if params[:email].blank? # check if email is present
-        return render json: {error: 'Email not present'}
+        return render json: {error: 'Email not present'}, status: :internal_server_error
       end
   
       user = User.find_by(email: params[:email]) # if present find user by email
@@ -20,7 +20,7 @@ module Api::V1
   
     def reset      
       if params[:token].blank?
-        return render json: {error: 'Token not present'}
+        return render json: {error: 'Token not present'}, status: :internal_server_error
       end
 
       token = params[:token].to_s
