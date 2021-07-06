@@ -1,12 +1,12 @@
-# vendor-management
+# Vendor Management
 
-## purpose
+## Purpose
 
 This is a basic SaaS app to let companies manage their vendors. It's purpose is to give me something to work on to
 make sure I don't forget how to build things. It also allows me to learn new things and give me something to tinker on
 since I don't think it'll ever be "done".
 
-## learning
+## Learning
 
 So far building this has allowed me to learn how to:
 
@@ -18,7 +18,7 @@ So far building this has allowed me to learn how to:
 - Store files and images using ActiveStorage with AWS S3
 - Set up and write unit tests for my Rails API
 
-## stack
+## Stack
 
 For this app I'm using:
 
