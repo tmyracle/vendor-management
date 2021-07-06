@@ -14,6 +14,10 @@ const Vendors = () => {
     setAddVendorModalOpen(!addVendorModalOpen);
   };
 
+  const handleVendorSelection = (v) => {
+    setSelectedVendor(v);
+  };
+
   useEffect(() => {
     const fetchVendors = async () => {
       try {
@@ -33,6 +37,7 @@ const Vendors = () => {
       <div className="flex-1 relative z-0 flex overflow-hidden">
         <VendorList
           vendors={vendors}
+          handleVendorSelection={handleVendorSelection}
           toggleAddVendorModal={toggleAddVendorModal}
         />
         <VendorDetail vendor={selectedVendor} />

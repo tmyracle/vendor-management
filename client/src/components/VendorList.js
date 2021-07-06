@@ -20,11 +20,6 @@ const VendorList = (props) => {
     setQueryTerm(e.target.value);
   };
 
-  const showVendorProfile = () => {
-    // TODO: Add this to pass vendor to detail page
-    return null;
-  };
-
   useEffect(() => {
     const queryVendors = async () => {
       try {
@@ -80,6 +75,7 @@ const VendorList = (props) => {
                 type="search"
                 name="queryTerm"
                 id="queryTerm"
+                autoComplete="off"
                 onChange={handleQueryTermChange}
                 className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                 placeholder="Search"
@@ -106,23 +102,24 @@ const VendorList = (props) => {
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <a
-                          href="#"
-                          onClick={showVendorProfile}
-                          className="focus:outline-none"
+                        <button
+                          onClick={() => props.handleVendorSelection(vendor)}
+                          className="focus:outline-none container"
                         >
                           {/* Extend touch target to entire panel */}
+
                           <span
                             className="absolute inset-0"
                             aria-hidden="true"
                           />
-                          <p className="text-sm font-medium text-gray-900">
+
+                          <p className="text-sm text-left font-medium text-gray-900">
                             {vendor.name}
                           </p>
-                          <p className="text-sm text-gray-500 truncate">
+                          <p className="text-sm text-left text-gray-500 object-contain truncate">
                             {vendor.description}
                           </p>
-                        </a>
+                        </button>
                       </div>
                     </div>
                   </li>

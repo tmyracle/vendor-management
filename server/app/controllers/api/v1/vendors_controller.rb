@@ -11,6 +11,14 @@ module Api::V1
       end
     end
 
+    def show
+      if params[:id].present?
+        vendor = Vendor.find(params[:id])
+        render json: vendor.as_json, status: :ok
+      else
+        render json: {message: "No vendor id provided."}, status: :internal_server_error
+      end
+    end
 
     def vendor_list
       if params[:query_term].present?
