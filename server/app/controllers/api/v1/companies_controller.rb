@@ -17,7 +17,7 @@ module Api::V1
     def update
       if params[:logo].present?
         @company.logo.attach(params[:logo]) if !!@company
-        render json: @company.as_json(methods: :logo_url)
+        render json: @company.as_json(methods: :logo_url), status: :ok
       end
     end
 

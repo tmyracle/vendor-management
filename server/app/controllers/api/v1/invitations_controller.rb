@@ -7,12 +7,12 @@ module Api::V1
       @invited_user = User.create!(full_name: params[:full_name], email: params[:email], password: SecureRandom.hex(10))
       @invited_user.companies << company
       @invited_user.create_invite(@invited_user.id, @user.id, company.id)
-      render json: {invited_user: @invited_user.as_json(include: [:companies]).except("password_digest")}
+      render json: {invited_user: @invited_user.as_json(include: [:companies]).except("password_digest")}, status: :ok
     end
 
     def accept
       if params[:token].blank?
-        return render json: {error: 'Token not present'}
+        return render json: {error: 'Token not present'}, status: :internal_server_error
       end
 
       token = params[:token].to_s
@@ -25,7 +25,7 @@ module Api::V1
           invite.save!
           render json: {status: 'ok'}, status: :ok
         else
-          render json: {error: user.errors.full_messages}, status: :unprocessable_entity
+          render json: {error: 'Something went wrong'}, status: :unprocessable_entity
         end
       else
         render json: {error:  ['Link not valid or expired. Try generating a new link.']}, status: :not_found
