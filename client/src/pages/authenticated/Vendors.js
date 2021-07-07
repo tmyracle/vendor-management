@@ -4,14 +4,21 @@ import { withToken } from "../../lib/authHandler";
 import VendorDetail from "../../components/VendorDetail";
 import VendorList from "../../components/VendorList";
 import AddVendorModal from "../../components/AddVendorModal";
+import VendorEdit from "../../components/VendorEdit";
 
 const Vendors = () => {
   const [vendors, setVendors] = useState();
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [addVendorModalOpen, setAddVendorModalOpen] = useState(false);
+  const [editFormVisible, setEditFormVisible] = useState(false);
 
   const toggleAddVendorModal = () => {
     setAddVendorModalOpen(!addVendorModalOpen);
+  };
+
+  const toggleEditFormVisible = () => {
+    console.log("I have been toggled");
+    setEditFormVisible(!editFormVisible);
   };
 
   const handleVendorSelection = (v) => {
@@ -40,7 +47,15 @@ const Vendors = () => {
           handleVendorSelection={handleVendorSelection}
           toggleAddVendorModal={toggleAddVendorModal}
         />
-        <VendorDetail vendor={selectedVendor} />
+        <VendorDetail
+          vendor={selectedVendor}
+          toggleEditFormVisible={toggleEditFormVisible}
+        />
+        <VendorEdit
+          vendor={selectedVendor}
+          isVisible={editFormVisible}
+          toggleEditFormVisible={toggleEditFormVisible}
+        />
         <AddVendorModal
           isOpen={addVendorModalOpen}
           toggleAddVendorModal={toggleAddVendorModal}
