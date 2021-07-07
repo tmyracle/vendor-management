@@ -1,5 +1,6 @@
 import React, { useState, Fragment, useEffect } from "react";
 import axios from "axios";
+import { withToken } from "../lib/authHandler";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import {
@@ -48,10 +49,56 @@ const team = [
 
 const VendorEdit = (props) => {
   const [open, setOpen] = useState(props.isVisible);
+  const [vendorName, setVendorName] = useState("");
+  const [vendorWebsite, setVendorWebsite] = useState("");
+  const [vendorDescription, setVendorDescription] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const handleVendorNameChange = (e) => {
+    setVendorName(e.target.value);
+  };
+
+  const handleVendorWebsiteChange = (e) => {
+    setVendorWebsite(e.target.value);
+  };
+
+  const handleVendorDescriptionChange = (e) => {
+    setVendorDescription(e.target.value);
+  };
+
+  const handleVendorUpdate = async () => {
+    const payload = {
+      name: vendorName,
+      website: vendorWebsite,
+      description: vendorDescription,
+    };
+
+    try {
+      const res = await axios.patch(
+        `/api/v1/vendors/${props.vendor.id}`,
+        payload,
+        withToken()
+      );
+      if (res.status === 200) {
+        console.log("It worked");
+        console.log(res.data);
+      }
+    } catch (err) {
+      setErrorMessage(err.response.data.message);
+    }
+  };
 
   useEffect(() => {
     setOpen(props.isVisible);
   }, [props.isVisible]);
+
+  useEffect(() => {
+    if (props.vendor !== null) {
+      setVendorName(props.vendor.name);
+      setVendorWebsite(props.vendor.website);
+      setVendorDescription(props.vendor.description);
+    }
+  }, [props.vendor]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -89,6 +136,7 @@ const VendorEdit = (props) => {
                             Update information about the vendor in the fields
                             below.
                           </p>
+                          {errorMessage ? <p>{errorMessage}</p> : null}
                         </div>
                         <div className="h-7 flex items-center">
                           <button
@@ -120,12 +168,14 @@ const VendorEdit = (props) => {
                             type="text"
                             name="name"
                             id="name"
+                            autoComplete="off"
+                            onChange={handleVendorNameChange}
                             className="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
                           />
                         </div>
                       </div>
 
-                      {/* Vendor name */}
+                      {/* Vendor website */}
                       <div className="space-y-1 px-4 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
                         <div>
                           <label
@@ -140,12 +190,14 @@ const VendorEdit = (props) => {
                             type="text"
                             name="website"
                             id="website"
+                            autoComplete="off"
+                            onChange={handleVendorWebsiteChange}
                             className="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
                           />
                         </div>
                       </div>
 
-                      {/* Project description */}
+                      {/* Vendor description */}
                       <div className="space-y-1 px-4 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
                         <div>
                           <label
@@ -160,168 +212,13 @@ const VendorEdit = (props) => {
                             id="description"
                             name="description"
                             rows={3}
+                            autoComplete="off"
+                            onChange={handleVendorDescriptionChange}
                             className="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border border-gray-300 rounded-md"
                             defaultValue={""}
                           />
                         </div>
                       </div>
-
-                      {/* Team members */}
-                      <div className="space-y-2 px-4 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:px-6 sm:py-5">
-                        <div>
-                          <h3 className="text-sm font-medium text-gray-900">
-                            Team Members
-                          </h3>
-                        </div>
-                        <div className="sm:col-span-2">
-                          <div className="flex space-x-2">
-                            {team.map((person) => (
-                              <a
-                                key={person.email}
-                                href={person.href}
-                                className="flex-shrink-0 rounded-full hover:opacity-75"
-                              >
-                                <img
-                                  className="inline-block h-8 w-8 rounded-full"
-                                  src={person.imageUrl}
-                                  alt={person.name}
-                                />
-                              </a>
-                            ))}
-
-                            <button
-                              type="button"
-                              className="flex-shrink-0 bg-white inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-dashed border-gray-200 text-gray-400 hover:text-gray-500 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            >
-                              <span className="sr-only">Add team member</span>
-                              <PlusIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Privacy */}
-                      <fieldset>
-                        <div className="space-y-2 px-4 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:px-6 sm:py-5">
-                          <div>
-                            <legend className="text-sm font-medium text-gray-900">
-                              Privacy
-                            </legend>
-                          </div>
-                          <div className="space-y-5 sm:col-span-2">
-                            <div className="space-y-5 sm:mt-0">
-                              <div className="relative flex items-start">
-                                <div className="absolute flex items-center h-5">
-                                  <input
-                                    id="public-access"
-                                    name="privacy"
-                                    aria-describedby="public-access-description"
-                                    type="radio"
-                                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                                    defaultChecked
-                                  />
-                                </div>
-                                <div className="pl-7 text-sm">
-                                  <label
-                                    htmlFor="public-access"
-                                    className="font-medium text-gray-900"
-                                  >
-                                    Public access
-                                  </label>
-                                  <p
-                                    id="public-access-description"
-                                    className="text-gray-500"
-                                  >
-                                    Everyone with the link will see this project
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="relative flex items-start">
-                                <div className="absolute flex items-center h-5">
-                                  <input
-                                    id="restricted-access"
-                                    name="privacy"
-                                    aria-describedby="restricted-access-description"
-                                    type="radio"
-                                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                                  />
-                                </div>
-                                <div className="pl-7 text-sm">
-                                  <label
-                                    htmlFor="restricted-access"
-                                    className="font-medium text-gray-900"
-                                  >
-                                    Private to Project Members
-                                  </label>
-                                  <p
-                                    id="restricted-access-description"
-                                    className="text-gray-500"
-                                  >
-                                    Only members of this project would be able
-                                    to access
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="relative flex items-start">
-                                <div className="absolute flex items-center h-5">
-                                  <input
-                                    id="private-access"
-                                    name="privacy"
-                                    aria-describedby="private-access-description"
-                                    type="radio"
-                                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                                  />
-                                </div>
-                                <div className="pl-7 text-sm">
-                                  <label
-                                    htmlFor="private-access"
-                                    className="font-medium text-gray-900"
-                                  >
-                                    Private to you
-                                  </label>
-                                  <p
-                                    id="private-access-description"
-                                    className="text-gray-500"
-                                  >
-                                    You are the only one able to access this
-                                    project
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                            <hr className="border-gray-200" />
-                            <div className="flex flex-col space-between space-y-4 sm:flex-row sm:items-center sm:space-between sm:space-y-0">
-                              <div className="flex-1">
-                                <a
-                                  href="#"
-                                  className="group flex items-center text-sm text-indigo-600 hover:text-indigo-900 font-medium space-x-2.5"
-                                >
-                                  <LinkIcon
-                                    className="h-5 w-5 text-indigo-500 group-hover:text-indigo-900"
-                                    aria-hidden="true"
-                                  />
-                                  <span>Copy link</span>
-                                </a>
-                              </div>
-                              <div>
-                                <a
-                                  href="#"
-                                  className="group flex items-center text-sm text-gray-500 hover:text-gray-900 space-x-2.5"
-                                >
-                                  <QuestionMarkCircleIcon
-                                    className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                                    aria-hidden="true"
-                                  />
-                                  <span>Learn more about sharing</span>
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </fieldset>
                     </div>
                   </div>
 

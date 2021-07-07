@@ -11,6 +11,16 @@ module Api::V1
       end
     end
 
+    def update
+      if params[:id].present?
+        vendor = Vendor.find(params[:id])
+        vendor.update(name: params[:name], website: params[:website], description: params[:description])
+        render json: vendor.as_json, status: :ok
+      else
+        render json: {message: "Something went wrong updating the vendor"}, status: :internal_server_error
+      end
+    end
+
     def show
       if params[:id].present?
         vendor = Vendor.find(params[:id])
