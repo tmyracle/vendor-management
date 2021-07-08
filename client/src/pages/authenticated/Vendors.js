@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { withToken } from "../../lib/authHandler";
 import VendorDetail from "../../components/VendorDetail";
@@ -17,7 +17,6 @@ const Vendors = () => {
   };
 
   const toggleEditFormVisible = () => {
-    console.log("I have been toggled");
     setEditFormVisible(!editFormVisible);
   };
 
@@ -25,19 +24,24 @@ const Vendors = () => {
     setSelectedVendor(v);
   };
 
-  useEffect(() => {
-    const fetchVendors = async () => {
-      try {
-        const res = await axios.get("/api/v1/vendor_list", withToken());
-        if (res.status === 200) {
-          setVendors(res.data);
-        }
-      } catch (error) {
-        console.log(error);
+  const fetchVendors = useCallback(async (isMounted) => {
+    try {
+      const res = await axios.get("/api/v1/vendor_list", withToken());
+      if (res.status === 200 && isMounted) {
+        setVendors(res.data);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchVendors(isMounted);
+    return () => {
+      isMounted = false;
     };
-    fetchVendors();
-  }, [addVendorModalOpen]);
+  }, [addVendorModalOpen, fetchVendors]);
 
   return (
     <div className="h-screen flex overflow-hidden bg-white">
@@ -47,15 +51,22 @@ const Vendors = () => {
           handleVendorSelection={handleVendorSelection}
           toggleAddVendorModal={toggleAddVendorModal}
         />
-        <VendorDetail
-          vendor={selectedVendor}
-          toggleEditFormVisible={toggleEditFormVisible}
-        />
-        <VendorEdit
-          vendor={selectedVendor}
-          isVisible={editFormVisible}
-          toggleEditFormVisible={toggleEditFormVisible}
-        />
+        {selectedVendor ? (
+          <>
+            <VendorDetail
+              vendor={selectedVendor}
+              toggleEditFormVisible={toggleEditFormVisible}
+            />
+            <VendorEdit
+              vendor={selectedVendor}
+              isVisible={editFormVisible}
+              toggleEditFormVisible={toggleEditFormVisible}
+              fetchVendors={fetchVendors}
+              setVendor={handleVendorSelection}
+            />
+          </>
+        ) : null}
+
         <AddVendorModal
           isOpen={addVendorModalOpen}
           toggleAddVendorModal={toggleAddVendorModal}

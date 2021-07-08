@@ -3,55 +3,14 @@ import axios from "axios";
 import { withToken } from "../lib/authHandler";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
-import {
-  LinkIcon,
-  PlusIcon,
-  QuestionMarkCircleIcon,
-} from "@heroicons/react/solid";
-
-const team = [
-  {
-    name: "Tom Cook",
-    email: "tomcook@example.com",
-    href: "#",
-    imageUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Whitney Francis",
-    email: "whitneyfrancis@example.com",
-    href: "#",
-    imageUrl:
-      "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Leonard Krasner",
-    email: "leonardkrasner@example.com",
-    href: "#",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Floyd Miles",
-    email: "floydmiles@example.com",
-    href: "#",
-    imageUrl:
-      "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Emily Selman",
-    email: "emilyselman@example.com",
-    href: "#",
-    imageUrl:
-      "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-];
 
 const VendorEdit = (props) => {
   const [open, setOpen] = useState(props.isVisible);
-  const [vendorName, setVendorName] = useState("");
-  const [vendorWebsite, setVendorWebsite] = useState("");
-  const [vendorDescription, setVendorDescription] = useState("");
+  const [vendorName, setVendorName] = useState(props.vendor.name);
+  const [vendorWebsite, setVendorWebsite] = useState(props.vendor.website);
+  const [vendorDescription, setVendorDescription] = useState(
+    props.vendor.description
+  );
   const [errorMessage, setErrorMessage] = useState(null);
 
   const handleVendorNameChange = (e) => {
@@ -80,8 +39,9 @@ const VendorEdit = (props) => {
         withToken()
       );
       if (res.status === 200) {
-        console.log("It worked");
-        console.log(res.data);
+        props.fetchVendors(true);
+        props.setVendor(res.data);
+        props.toggleEditFormVisible();
       }
     } catch (err) {
       setErrorMessage(err.response.data.message);
@@ -93,11 +53,9 @@ const VendorEdit = (props) => {
   }, [props.isVisible]);
 
   useEffect(() => {
-    if (props.vendor !== null) {
-      setVendorName(props.vendor.name);
-      setVendorWebsite(props.vendor.website);
-      setVendorDescription(props.vendor.description);
-    }
+    setVendorName(props.vendor.name);
+    setVendorWebsite(props.vendor.website);
+    setVendorDescription(props.vendor.description);
   }, [props.vendor]);
 
   return (
@@ -169,6 +127,7 @@ const VendorEdit = (props) => {
                             name="name"
                             id="name"
                             autoComplete="off"
+                            value={vendorName}
                             onChange={handleVendorNameChange}
                             className="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
                           />
@@ -191,6 +150,7 @@ const VendorEdit = (props) => {
                             name="website"
                             id="website"
                             autoComplete="off"
+                            value={vendorWebsite || ""}
                             onChange={handleVendorWebsiteChange}
                             className="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
                           />
@@ -213,9 +173,9 @@ const VendorEdit = (props) => {
                             name="description"
                             rows={3}
                             autoComplete="off"
+                            value={vendorDescription || ""}
                             onChange={handleVendorDescriptionChange}
                             className="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border border-gray-300 rounded-md"
-                            defaultValue={""}
                           />
                         </div>
                       </div>
@@ -233,10 +193,11 @@ const VendorEdit = (props) => {
                         Cancel
                       </button>
                       <button
-                        type="submit"
+                        type="button"
+                        onClick={handleVendorUpdate}
                         className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
-                        Create
+                        Save
                       </button>
                     </div>
                   </div>
