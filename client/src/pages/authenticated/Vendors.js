@@ -3,17 +3,17 @@ import axios from "axios";
 import { withToken } from "../../lib/authHandler";
 import VendorDetail from "../../components/VendorDetail";
 import VendorList from "../../components/VendorList";
-import AddVendorModal from "../../components/AddVendorModal";
+import VendorAddModal from "../../components/VendorAddModal";
 import VendorEdit from "../../components/VendorEdit";
 
 const Vendors = () => {
   const [vendors, setVendors] = useState();
   const [selectedVendor, setSelectedVendor] = useState(null);
-  const [addVendorModalOpen, setAddVendorModalOpen] = useState(false);
+  const [vendorAddModalOpen, setVendorAddModalOpen] = useState(false);
   const [editFormVisible, setEditFormVisible] = useState(false);
 
-  const toggleAddVendorModal = () => {
-    setAddVendorModalOpen(!addVendorModalOpen);
+  const toggleVendorAddModal = () => {
+    setVendorAddModalOpen(!vendorAddModalOpen);
   };
 
   const toggleEditFormVisible = () => {
@@ -41,7 +41,7 @@ const Vendors = () => {
     return () => {
       isMounted = false;
     };
-  }, [addVendorModalOpen, fetchVendors]);
+  }, [vendorAddModalOpen, fetchVendors]);
 
   return (
     <div className="h-screen flex overflow-hidden bg-white">
@@ -49,7 +49,7 @@ const Vendors = () => {
         <VendorList
           vendors={vendors}
           handleVendorSelection={handleVendorSelection}
-          toggleAddVendorModal={toggleAddVendorModal}
+          toggleVendorAddModal={toggleVendorAddModal}
         />
         {selectedVendor ? (
           <>
@@ -67,9 +67,9 @@ const Vendors = () => {
           </>
         ) : null}
 
-        <AddVendorModal
-          isOpen={addVendorModalOpen}
-          toggleAddVendorModal={toggleAddVendorModal}
+        <VendorAddModal
+          isOpen={vendorAddModalOpen}
+          toggleVendorAddModal={toggleVendorAddModal}
         />
       </div>
     </div>
