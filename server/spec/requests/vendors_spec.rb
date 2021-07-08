@@ -80,4 +80,18 @@ describe 'Vendors API', type: :request do
       expect(JSON.parse(response.body)["name"]).to eq("Alpha Co")
     end
   end
+
+  context 'when updating vendor' do
+    it 'should require authentication' do
+      patch '/api/v1/vendors/1', params: {name: "Updated Name"}
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'should return the updated vendor' do
+      v1 = FactoryBot.create(:vendor, name: "Alpha Co", description: "We are alpha!", website: "www.alpha.com", company_id: @company.id)
+      patch "/api/v1/vendors/#{v1.id}", params: {name: "Updated Name"}, headers: {"Authorization": "Bearer #{@token}"}
+      expect(JSON.parse(response.body)["name"]).to eq("Updated Name")
+      expect(JSON.parse(response.body)["website"]).to eq("www.alpha.com")
+    end
+  end
 end

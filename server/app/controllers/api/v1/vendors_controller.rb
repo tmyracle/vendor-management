@@ -14,7 +14,7 @@ module Api::V1
     def update
       if params[:id].present?
         vendor = Vendor.find(params[:id])
-        vendor.update(name: params[:name], website: params[:website], description: params[:description])
+        vendor.update(update_params)
         render json: vendor.as_json, status: :ok
       else
         render json: {message: "Something went wrong updating the vendor"}, status: :internal_server_error
@@ -54,5 +54,9 @@ module Api::V1
       def vendor_params
         params.require(:name).permit(:id, :name, :description, :website)
       end 
+
+      def update_params
+        params.permit(:id, :name, :description, :website).select { |k, v| !v.nil? }
+      end
   end
 end
