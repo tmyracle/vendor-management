@@ -89,7 +89,7 @@ describe 'Vendors API', type: :request do
 
     it 'should return the updated vendor' do
       v1 = FactoryBot.create(:vendor, name: "Alpha Co", description: "We are alpha!", website: "www.alpha.com", company_id: @company.id)
-      patch "/api/v1/vendors/#{v1.id}", params: {name: "Updated Name"}, headers: {"Authorization": "Bearer #{@token}"}
+      patch "/api/v1/vendors/#{v1.id}", params: {name: 'Updated Name'}, headers: {"Authorization": "Bearer #{@token}"}
       expect(JSON.parse(response.body)["name"]).to eq("Updated Name")
       expect(JSON.parse(response.body)["website"]).to eq("www.alpha.com")
     end
