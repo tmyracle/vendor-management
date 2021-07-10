@@ -41,13 +41,22 @@ const ContactAddEditModal = (props) => {
     const payload = {
       name: name,
       title: title,
-      primaryPhone: primaryPhone,
-      secondaryPhone: secondaryPhone,
+      primary_phone: primaryPhone,
+      secondary_phone: secondaryPhone,
       email: email,
       notes: notes,
+      vendor_id: props.vendor.id,
     };
 
-    console.log(payload);
+    try {
+      const res = await axios.post("/api/v1/contacts", payload, withToken());
+      if (res.status === 200) {
+        console.log(res.data);
+        props.toggleContactAddEditModal();
+      }
+    } catch (err) {
+      setErrorMessage(err.response.data.message);
+    }
   };
 
   const handleContactEditSubmit = async () => {
