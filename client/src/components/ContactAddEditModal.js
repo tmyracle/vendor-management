@@ -1,21 +1,21 @@
-import React, {useState, Fragment} from 'react';
+import React, { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import axios from 'axios';
+import axios from "axios";
 import { withToken } from "../lib/authHandler";
-import {UserAddIcon} from "@heroicons/react/solid"
+import { UserAddIcon } from "@heroicons/react/solid";
 
 const ContactAddEditModal = (props) => {
-  const [errorMessage, setErrorMessage] = useState('');
-  const [name, setName] = useState('');
-  const [title, setTitle] = useState('');
-  const [primaryPhone, setPrimaryPhone] = useState('');
-  const [secondaryPhone, setSecondaryPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [notes, setNotes] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
+  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
+  const [primaryPhone, setPrimaryPhone] = useState("");
+  const [secondaryPhone, setSecondaryPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [notes, setNotes] = useState("");
 
   const handleNameChange = (e) => {
     setName(e.target.value);
-  }
+  };
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -47,15 +47,15 @@ const ContactAddEditModal = (props) => {
       notes: notes,
     };
 
-    console.log(payload)
-  }
+    console.log(payload);
+  };
 
   const handleContactEditSubmit = async () => {
-    console.log(`Editing: ${name}`)
-  }
+    console.log(`Editing: ${name}`);
+  };
 
   return (
-<div>
+    <div>
       <Transition.Root show={props.isOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -109,86 +109,87 @@ const ContactAddEditModal = (props) => {
                     >
                       Add a contact for {props.vendor.name}
                     </Dialog.Title>
-                    <div className="space-y-6 mt-4">
+                    <div className="space-y-3 mt-4">
                       {errorMessage ? (
                         <div className="text-red-500">{errorMessage}</div>
                       ) : (
                         <></>
                       )}
-                      <div>
-                        <label
-                          htmlFor="name"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Name
-                        </label>
-                        <div className="mt-1">
-                          <input
-                            id="name"
-                            name="name"
-                            type="text"
-                            autoComplete="off"
-                            onChange={handleNameChange}
-                            required
-                            className="appearance-none inline w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                          />
+                      <div className="grid grid-cols-6 gap-3">
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="name"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Name
+                          </label>
+                          <div className="mt-1">
+                            <input
+                              id="name"
+                              name="name"
+                              type="text"
+                              autoComplete="off"
+                              onChange={handleNameChange}
+                              required
+                              className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            />
+                          </div>
                         </div>
-                      </div>
 
-                      <div>
-                        <label
-                          htmlFor="title"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Title
-                        </label>
-                        <div className="mt-1">
-                          <input
-                            id="title"
-                            name="title"
-                            type="text"
-                            autoComplete="off"
-                            onChange={handleTitleChange}
-                            required
-                            className="appearance-none inline w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                          />
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="title"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Title
+                          </label>
+                          <div className="mt-1">
+                            <input
+                              id="title"
+                              name="title"
+                              type="text"
+                              autoComplete="off"
+                              onChange={handleTitleChange}
+                              required
+                              className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            />
+                          </div>
                         </div>
-                      </div>
 
-                      <div>
-                        <label
-                          htmlFor="primaryPhone"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Primary phone number
-                        </label>
-                        <div className="mt-1">
-                          <input
-                            id="primaryPhone"
-                            name="primaryPhone"
-                            type="text"
-                            onChange={handlePrimaryPhoneChange}
-                            className="appearance-none inline w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                          />
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="primaryPhone"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Primary phone
+                          </label>
+                          <div className="mt-1">
+                            <input
+                              id="primaryPhone"
+                              name="primaryPhone"
+                              type="text"
+                              onChange={handlePrimaryPhoneChange}
+                              className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            />
+                          </div>
                         </div>
-                      </div>
 
-
-                      <div>
-                        <label
-                          htmlFor="secondaryPhone"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Secondary phone number
-                        </label>
-                        <div className="mt-1">
-                          <input
-                            id="secondaryPhone"
-                            name="secondaryPhone"
-                            type="text"
-                            onChange={handleSecondaryPhoneChange}
-                            className="appearance-none inline w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                          />
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="secondaryPhone"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Secondary phone
+                          </label>
+                          <div className="mt-1">
+                            <input
+                              id="secondaryPhone"
+                              name="secondaryPhone"
+                              type="text"
+                              onChange={handleSecondaryPhoneChange}
+                              className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            />
+                          </div>
                         </div>
                       </div>
 
@@ -252,8 +253,7 @@ const ContactAddEditModal = (props) => {
         </Dialog>
       </Transition.Root>
     </div>
-  )
-
-}
+  );
+};
 
 export default ContactAddEditModal;

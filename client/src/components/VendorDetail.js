@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { withToken } from "../lib/authHandler";
-import {
-  ChevronLeftIcon,
-  PencilAltIcon,
-} from "@heroicons/react/solid";
+import { ChevronLeftIcon, PencilAltIcon } from "@heroicons/react/solid";
 import { UserIcon } from "@heroicons/react/outline";
 import { UserAddIcon } from "@heroicons/react/solid";
 import ContactAddEditModal from "./ContactAddEditModal";
@@ -54,7 +51,7 @@ const VendorDetail = (props) => {
 
   const toggleContactAddEditModal = () => {
     setContactAddEditModalOpen(!contactAddEditModalOpen);
-  }
+  };
 
   useEffect(() => {
     const fetchVendor = async () => {
@@ -252,10 +249,11 @@ const VendorDetail = (props) => {
           {/* Empty state when vendor not selected */}
         </div>
       )}
-      <ContactAddEditModal 
-        isOpen={contactAddEditModalOpen} 
+      <ContactAddEditModal
+        isOpen={contactAddEditModalOpen}
         toggleContactAddEditModal={toggleContactAddEditModal}
-        vendor={vendor} />
+        vendor={vendor}
+      />
     </main>
   );
 };
