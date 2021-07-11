@@ -1,13 +1,39 @@
 import React, { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { withToken } from "../lib/authHandler";
 import { UserAddIcon } from "@heroicons/react/solid";
+import * as yup from "yup";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
+
+const schema = yup.object().shape({
+  name: yup
+    .string()
+    .matches(/^([^0-9]*)$/, "Name should not contain numbers")
+    .required("Name is a required field"),
+  title: yup.string(),
+  primary_phone: yup.string(),
+  secondary_phone: yup.string(),
+  email: yup.string().email("Email must be the correct format"),
+  notes: yup.string(),
+});
+
+const normalizePhoneNumber = (val) => {
+  const phoneNumber = parsePhoneNumberFromString(val);
+  if (!phoneNumber) {
+    return val;
+  }
+
+  return phoneNumber.formatInternational();
+};
 
 const ContactAddEditModal = (props) => {
   const [errorMessage, setErrorMessage] = useState("");
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const handleContactAddSubmit = async (data) => {
     const payload = {
@@ -147,6 +173,11 @@ const ContactAddEditModal = (props) => {
                                 name="primaryPhone"
                                 type="text"
                                 {...register("primaryPhone")}
+                                onChange={(event) => {
+                                  event.target.value = normalizePhoneNumber(
+                                    event.target.value
+                                  );
+                                }}
                                 className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                               />
                             </div>
@@ -165,6 +196,11 @@ const ContactAddEditModal = (props) => {
                                 name="secondaryPhone"
                                 type="text"
                                 {...register("secondaryPhone")}
+                                onChange={(event) => {
+                                  event.target.value = normalizePhoneNumber(
+                                    event.target.value
+                                  );
+                                }}
                                 className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                               />
                             </div>
