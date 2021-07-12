@@ -7,6 +7,7 @@ import { withToken } from "../lib/authHandler";
 import { UserAddIcon } from "@heroicons/react/solid";
 import * as yup from "yup";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import toast from "react-hot-toast";
 
 const schema = yup.object().shape({
   name: yup
@@ -73,6 +74,9 @@ const ContactAddEditModal = (props) => {
       try {
         const res = await axios.post("/api/v1/contacts", payload, withToken());
         if (res.status === 200) {
+          toast.success(
+            `${payload.name} added to contacts for ${props.vendor.name}`
+          );
           props.fetchVendor();
           props.toggleContactAddEditModal();
           reset();
@@ -88,6 +92,7 @@ const ContactAddEditModal = (props) => {
           withToken()
         );
         if (res.status === 200) {
+          toast.success(`${payload.name} contact info updated.`);
           props.fetchVendor();
           props.toggleContactAddEditModal();
           reset();

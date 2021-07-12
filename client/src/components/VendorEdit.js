@@ -3,6 +3,7 @@ import axios from "axios";
 import { withToken } from "../lib/authHandler";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
+import toast from "react-hot-toast";
 
 const VendorEdit = (props) => {
   const [open, setOpen] = useState(props.isVisible);
@@ -39,6 +40,7 @@ const VendorEdit = (props) => {
         withToken()
       );
       if (res.status === 200) {
+        toast.success("Vendor info updated.");
         props.fetchVendors(true);
         props.setVendor(res.data);
         props.toggleEditFormVisible();
@@ -99,7 +101,7 @@ const VendorEdit = (props) => {
                         <div className="h-7 flex items-center">
                           <button
                             type="button"
-                            className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             onClick={props.toggleEditFormVisible}
                           >
                             <span className="sr-only">Close panel</span>
@@ -129,7 +131,7 @@ const VendorEdit = (props) => {
                             autoComplete="off"
                             value={vendorName}
                             onChange={handleVendorNameChange}
-                            className="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+                            className="block w-full shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-md"
                           />
                         </div>
                       </div>
@@ -152,7 +154,7 @@ const VendorEdit = (props) => {
                             autoComplete="off"
                             value={vendorWebsite || ""}
                             onChange={handleVendorWebsiteChange}
-                            className="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+                            className="block w-full shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-md"
                           />
                         </div>
                       </div>
@@ -175,7 +177,7 @@ const VendorEdit = (props) => {
                             autoComplete="off"
                             value={vendorDescription || ""}
                             onChange={handleVendorDescriptionChange}
-                            className="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border border-gray-300 rounded-md"
+                            className="block w-full shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500 border border-gray-300 rounded-md"
                           />
                         </div>
                       </div>
@@ -187,7 +189,7 @@ const VendorEdit = (props) => {
                     <div className="space-x-3 flex justify-end">
                       <button
                         type="button"
-                        className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         onClick={props.toggleEditFormVisible}
                       >
                         Cancel
@@ -195,7 +197,7 @@ const VendorEdit = (props) => {
                       <button
                         type="button"
                         onClick={handleVendorUpdate}
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                       >
                         Save
                       </button>

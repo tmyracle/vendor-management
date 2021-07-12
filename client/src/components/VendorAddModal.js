@@ -3,6 +3,7 @@ import axios from "axios";
 import { withToken } from "../lib/authHandler";
 import { Dialog, Transition } from "@headlessui/react";
 import { BriefcaseIcon } from "@heroicons/react/outline";
+import toast from "react-hot-toast";
 
 const VendorAddModal = (props) => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,6 +39,7 @@ const VendorAddModal = (props) => {
         withToken()
       );
       if (res.status === 200) {
+        toast.success(`${name} added to vendors.`);
         props.toggleVendorAddModal();
       }
     } catch (err) {
