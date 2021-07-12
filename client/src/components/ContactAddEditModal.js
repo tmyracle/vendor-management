@@ -157,7 +157,8 @@ const ContactAddEditModal = (props) => {
                         as="h3"
                         className="text-lg leading-6 font-medium text-gray-900 text-center"
                       >
-                        Add a contact for {props.vendor.name}
+                        {props.mode === "add" ? "Add a" : "Edit"} contact for{" "}
+                        {props.vendor.name}
                       </Dialog.Title>
                       <div className="space-y-3 mt-4">
                         {errorMessage ? (

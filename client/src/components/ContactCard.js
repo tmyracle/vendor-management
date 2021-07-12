@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import parsePhoneNumber from "libphonenumber-js";
+import { TrashIcon } from "@heroicons/react/outline";
+import { ContactDeleteConfirmation } from "./ContactDeleteConfirmation";
 
 export const ContactCard = (props) => {
+  const [open, setOpen] = useState(false);
   const fields = [
     {
       field: "primary_phone",
@@ -43,11 +46,20 @@ export const ContactCard = (props) => {
     props.toggleContactEditModal();
   };
 
+  const handleDeleteIconClick = (e) => {
+    e.stopPropagation();
+    setOpen(!open);
+  };
+
   return (
     <div
-      className="relative rounded-lg border border-gray-300  bg-white px-6 py-5 shadow-sm hover:shadow-md flex items-center space-x-3 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 cursor-pointer"
+      className="relative group rounded-lg border border-gray-300  bg-white px-6 py-5 shadow-sm hover:shadow-md flex items-center space-x-3 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 cursor-pointer"
       onClick={handleContactClick}
     >
+      <TrashIcon
+        className="absolute right-6 z-10 top-5 h-6 w-6 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100"
+        onClick={handleDeleteIconClick}
+      />
       <div className="flex-shrink-0">
         <div className="h-12 w-12 flex rounded-full bg-gray-200 text-center justify-center items-center">
           <span>{getInitials(props.contact.name)}</span>
@@ -78,6 +90,14 @@ export const ContactCard = (props) => {
           ))}
         </div>
       </div>
+      {open ? (
+        <ContactDeleteConfirmation
+          contact={props.contact}
+          open={open}
+          fetchVendor={props.fetchVendor}
+          toggleAlert={handleDeleteIconClick}
+        />
+      ) : null}
     </div>
   );
 };

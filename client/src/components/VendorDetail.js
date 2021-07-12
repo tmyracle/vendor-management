@@ -221,6 +221,9 @@ const VendorDetail = (props) => {
                     <ContactCard
                       contact={contact}
                       key={contact.id}
+                      fetchVendor={() => {
+                        fetchVendor(true);
+                      }}
                       toggleContactEditModal={() => {
                         toggleContactEditModal(contact);
                       }}
