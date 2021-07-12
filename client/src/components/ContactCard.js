@@ -1,31 +1,82 @@
 import React from "react";
+import parsePhoneNumber from "libphonenumber-js";
 
 export const ContactCard = (props) => {
-  const fields = [{ field: "", displayName: "", value: "" }];
+  const fields = [
+    {
+      field: "primary_phone",
+      displayName: "Primary phone",
+      value: props.contact.primary_phone,
+    },
+    {
+      field: "secondary_phone",
+      displayName: "Secondary phone",
+      value: props.contact.secondary_phone,
+    },
+    { field: "email", displayName: "Email", value: props.contact.email },
+    { field: "name", displayName: "Notes", value: props.contact.notes },
+  ];
+
+  const getInitials = (field) => {
+    const words = field.split(" ");
+    if (words.length > 1) {
+      return `${words[0][0].toUpperCase() + words[1][0].toUpperCase()}`;
+    } else {
+      return words[0][0];
+    }
+  };
+
+  const formatField = (field) => {
+    if (field.field === "primary_phone" || field.field === "secondary_phone") {
+      if (field.value && field.value.length > 0) {
+        const phoneNumber = parsePhoneNumber(field.value, "US");
+        return phoneNumber.formatNational();
+      } else {
+        return field.value;
+      }
+    } else {
+      return field.value;
+    }
+  };
+
+  const handleContactClick = () => {
+    props.toggleContactEditModal();
+  };
 
   return (
-    <div className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+    <div
+      className="relative rounded-lg border border-gray-300  bg-white px-6 py-5 shadow-sm hover:shadow-md flex items-center space-x-3 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 cursor-pointer"
+      onClick={handleContactClick}
+    >
       <div className="flex-shrink-0">
-        <img className="h-10 w-10 rounded-full" src={null} alt="" />
+        <div className="h-12 w-12 flex rounded-full bg-gray-200 text-center justify-center items-center">
+          <span>{getInitials(props.contact.name)}</span>
+        </div>
       </div>
-      <div className="flex-1 min-w-0">
-        <a href="/" className="focus:outline-none">
-          <span className="absolute inset-0" aria-hidden="true" />
-          <p className="text-sm font-medium text-gray-900">
+      <div className="flex-1 pl-4">
+        <span className="absolute inset-0" aria-hidden="true" />
+        <div className="flex items-center space-x-3">
+          <p className="font-medium text-gray-900 sm:col-span-2">
             {props.contact.name}
           </p>
-          <p className="text-sm text-gray-500 truncate">
-            {props.contact.title}
-          </p>
-          {/*
-          <div key={field} className="sm:col-span-1">
-            <dt className="text-sm font-medium text-gray-500">{field}</dt>
-            <dd className="mt-1 text-sm text-gray-900">
-              {profile.fields[field]}
-            </dd>
-          </div>
-          */}
-        </a>
+          {props.contact.title && props.contact.title.length > 0 ? (
+            <span className="flex-shrink-0 inline-block ml-2 px-2 py-0.5 text-gray-800 text-xs font-medium bg-gray-200 rounded-full">
+              {props.contact.title}
+            </span>
+          ) : null}
+        </div>
+        <div className="flex-1 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+          {fields.map((field) => (
+            <div key={field.field} className="sm:col-span-1">
+              <dt className="text-sm font-medium text-gray-500">
+                {field.displayName}
+              </dt>
+              <dd className="mt-1 text-sm text-gray-900">
+                {formatField(field)}
+              </dd>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

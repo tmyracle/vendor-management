@@ -12,6 +12,15 @@ module Api::V1
       end
     end
 
+    def update
+      contact = Contact.find(params[:id])
+      if contact.present?
+        contact.update(contact_params)
+        render json: contact.as_json, status: :ok
+      else
+        render json: {message: "There was a problem editing the contact."}, status: :internal_server_error
+      end
+    end
 
     private
       def contact_params

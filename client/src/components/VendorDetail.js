@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { withToken } from "../lib/authHandler";
 import { ChevronLeftIcon, PencilAltIcon } from "@heroicons/react/solid";
@@ -16,29 +16,14 @@ const tabs = [
 const coverImageUrl =
   "https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80";
 
-const team = [
-  {
-    name: "Leslie Alexander",
-    handle: "lesliealexander",
-    role: "Co-Founder / CEO",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Michael Foster",
-    handle: "michaelfoster",
-    role: "Co-Founder / CTO",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const VendorDetail = (props) => {
   const [vendor, setVendor] = useState(props.vendor);
+  const [mode, setMode] = useState(null);
+  const [contact, setContact] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [contactAddEditModalOpen, setContactAddEditModalOpen] = useState(false);
 
@@ -54,24 +39,41 @@ const VendorDetail = (props) => {
     setContactAddEditModalOpen(!contactAddEditModalOpen);
   };
 
-  useEffect(() => {
-    const fetchVendor = async () => {
-      if (props.vendor) {
-        try {
-          const res = await axios.get(
-            `/api/v1/vendors/${props.vendor.id}`,
-            withToken()
-          );
-          if (res.status === 200) {
-            setVendor(res.data);
-          }
-        } catch (err) {
-          setErrorMessage(err.response.data.message);
+  const toggleContactAddModal = () => {
+    setMode("add");
+    toggleContactAddEditModal();
+  };
+
+  const toggleContactEditModal = (contact) => {
+    setMode("edit");
+    setContact(contact);
+    toggleContactAddEditModal();
+  };
+
+  const fetchVendor = useCallback(
+    async (isMounted) => {
+      try {
+        const res = await axios.get(
+          `/api/v1/vendors/${props.vendor.id}`,
+          withToken()
+        );
+        if (res.status === 200 && isMounted) {
+          setVendor(res.data);
         }
+      } catch (err) {
+        setErrorMessage(err.response.data.message);
       }
+    },
+    [props.vendor.id]
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchVendor(isMounted);
+    return () => {
+      isMounted = false;
     };
-    fetchVendor();
-  }, [props.vendor]);
+  }, [props.vendor, fetchVendor]);
 
   return (
     <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last">
@@ -120,7 +122,7 @@ const VendorDetail = (props) => {
                     <div className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
                       <button
                         type="button"
-                        onClick={toggleContactAddEditModal}
+                        onClick={toggleContactAddModal}
                         className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                       >
                         <UserAddIcon
@@ -211,12 +213,18 @@ const VendorDetail = (props) => {
             </div>
 
             {/* Contact list */}
-            {vendor.contacts.length > 0 ? (
+            {vendor.contacts && vendor.contacts.length > 0 ? (
               <div className="mt-8 max-w-5xl mx-auto px-4 pb-12 sm:px-6 lg:px-8">
                 <h2 className="text-sm font-medium text-gray-500">Contacts</h2>
-                <div className="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-1">
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-1">
                   {vendor.contacts.map((contact) => (
-                    <ContactCard contact={contact} key={contact.id} />
+                    <ContactCard
+                      contact={contact}
+                      key={contact.id}
+                      toggleContactEditModal={() => {
+                        toggleContactEditModal(contact);
+                      }}
+                    />
                   ))}
                 </div>
               </div>
@@ -230,8 +238,13 @@ const VendorDetail = (props) => {
       )}
       <ContactAddEditModal
         isOpen={contactAddEditModalOpen}
+        mode={mode}
+        contact={contact}
         toggleContactAddEditModal={toggleContactAddEditModal}
         vendor={vendor}
+        fetchVendor={() => {
+          fetchVendor(true);
+        }}
       />
     </main>
   );
