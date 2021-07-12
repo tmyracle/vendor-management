@@ -30,6 +30,16 @@ module Api::V1
       end
     end
 
+    def destroy
+      vendor = Vendor.find(params[:id])
+      if vendor.present?
+        vendor.destroy
+        render status: :ok
+      else
+        render json: {message: "Error deleting vendor."}, status: :internal_server_error
+      end
+    end
+
     def vendor_list
       if params[:query_term].present?
         vendors = Vendor.where(company_id: @user.companies.first.id).where("name ILIKE ?", "%#{params[:query_term]}%").order('lower(name) asc')

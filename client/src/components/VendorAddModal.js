@@ -40,6 +40,10 @@ const VendorAddModal = (props) => {
       );
       if (res.status === 200) {
         toast.success(`${name} added to vendors.`);
+        setName("");
+        setWebsite("");
+        setDescription("");
+        setErrorMessage("");
         props.toggleVendorAddModal();
       }
     } catch (err) {
