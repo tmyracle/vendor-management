@@ -50,6 +50,23 @@ const VendorEdit = (props) => {
     }
   };
 
+  const handleVendorDelete = async () => {
+    try {
+      const res = await axios.delete(
+        `/api/v1/vendors/${props.vendor.id}`,
+        withToken()
+      );
+      if (res.status === 200) {
+        props.setVendor(null);
+        toast.success("Vendor successfully deleted.");
+        props.fetchVendors(true);
+        props.toggleEditFormVisible();
+      }
+    } catch (err) {
+      toast.error("Something went wrong deleting the vendor.");
+    }
+  };
+
   useEffect(() => {
     setOpen(props.isVisible);
   }, [props.isVisible]);
@@ -67,7 +84,7 @@ const VendorEdit = (props) => {
         static
         className="fixed inset-0 overflow-hidden"
         open={open}
-        onClose={setOpen}
+        onClose={props.toggleEditFormVisible}
       >
         <div className="absolute inset-0 overflow-hidden">
           <Dialog.Overlay className="absolute inset-0" />
@@ -187,6 +204,13 @@ const VendorEdit = (props) => {
                   {/* Action buttons */}
                   <div className="flex-shrink-0 px-4 border-t border-gray-200 py-5 sm:px-6">
                     <div className="space-x-3 flex justify-end">
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center mr-auto px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+                        onClick={handleVendorDelete}
+                      >
+                        Delete
+                      </button>
                       <button
                         type="button"
                         className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
