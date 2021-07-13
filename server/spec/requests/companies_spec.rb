@@ -12,12 +12,12 @@ describe 'Companies API', type: :request do
 
   context 'show company' do
     it 'should fail if unauthorized' do
-      get '/api/v1/companies/1'
+      get "/api/v1/companies/#{@company.id}"
       expect(response).to have_http_status(:unauthorized)
     end
 
     it 'should retern the correct company' do
-      get '/api/v1/companies/1', headers: {"Authorization": "Bearer #{@token}"}
+      get "/api/v1/companies/#{@company.id}", headers: {"Authorization": "Bearer #{@token}"}
       expect(response).to have_http_status(:success)
       expect(JSON.parse(response.body)["company"]["name"]).to eq("Test Company")
     end

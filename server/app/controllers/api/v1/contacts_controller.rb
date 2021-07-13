@@ -3,8 +3,7 @@ module Api::V1
     before_action :authorized
 
     def create
-      contact = Contact.create!(contact_params)
-      contact.update(company_owner: @user.companies.first.id)
+      contact = Contact.create!(contact_params.merge(company_owner: @user.companies.first.id))
       if contact.present?
         render json: contact.as_json, status: :ok
       else

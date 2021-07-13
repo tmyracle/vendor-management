@@ -81,6 +81,17 @@ describe 'Vendors API', type: :request do
     end
   end
 
+  context 'when getting a vendor with contacts' do
+    it 'should render contacts with the vendor' do
+      v1 = FactoryBot.create(:vendor, name: "Alpha Co", description: "We are alpha!", website: "www.alpha.com", company_id: @company.id)
+      c1 = FactoryBot.create(:contact, vendor_id: v1.id)
+      c2 = FactoryBot.create(:contact, vendor_id: v1.id)
+      get "/api/v1/vendors/#{v1.id}", headers: {"Authorization": "Bearer #{@token}"}
+      expect(response).to have_http_status(:success)
+      expect(JSON.parse(response.body)["contacts"].size).to eq(2)
+    end
+  end
+
   context 'when updating vendor' do
     it 'should require authentication' do
       patch '/api/v1/vendors/1', params: {name: "Updated Name"}
@@ -92,6 +103,28 @@ describe 'Vendors API', type: :request do
       patch "/api/v1/vendors/#{v1.id}", params: {name: 'Updated Name'}, headers: {"Authorization": "Bearer #{@token}"}
       expect(JSON.parse(response.body)["name"]).to eq("Updated Name")
       expect(JSON.parse(response.body)["website"]).to eq("www.alpha.com")
+    end
+  end
+
+  context 'when destroying vendor' do
+    it 'should not destroy successfully' do
+      v1 = FactoryBot.create(:vendor, name: "Alpha Co", description: "We are alpha!", website: "www.alpha.com", company_id: @company.id)
+      vendor_count_initial = Vendor.count
+      delete "/api/v1/vendors/#{v1.id}", headers: {"Authorization": "Bearer #{@token}"}
+      expect(response).to have_http_status(:success)
+      vendor_count_final = Vendor.count
+      expect(vendor_count_initial - vendor_count_final).to eq(1)
+    end
+
+    it 'should delete any associted contacts' do
+      v1 = FactoryBot.create(:vendor, name: "Alpha Co", description: "We are alpha!", website: "www.alpha.com", company_id: @company.id)
+      c1 = FactoryBot.create(:contact, vendor_id: v1.id)
+      c2 = FactoryBot.create(:contact, vendor_id: v1.id)
+      contact_count_initial = Contact.count
+      delete "/api/v1/vendors/#{v1.id}", headers: {"Authorization": "Bearer #{@token}"}
+      expect(response).to have_http_status(:success)
+      contact_count_final = Contact.count
+      expect(contact_count_initial - contact_count_final).to eq(2)
     end
   end
 end
