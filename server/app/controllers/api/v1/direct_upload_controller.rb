@@ -1,6 +1,6 @@
 module Api::V1
   class DirectUploadController < ApplicationController
-    before_action :authorized, except: [:create]
+    
     def create
       response = generate_direct_upload(blob_params)
       render json: response

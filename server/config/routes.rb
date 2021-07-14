@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       resources :companies, only: [:show, :create, :update]
       resources :vendors
       resources :contacts
+      resources :msas
       resource :users, only: [:create]
       post "/login", to: "users#login"
       get "/auto_login", to: "users#auto_login"

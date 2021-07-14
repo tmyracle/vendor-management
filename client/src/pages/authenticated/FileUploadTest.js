@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import uploadToS3 from "../../lib/fileUpload";
 import axios from "axios";
 import { withToken } from "../../lib/authHandler";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [companyId, setCompanyId] = useState(null);
-  const [logoUrl, setLogoUrl] = useState(null);
+  const [msaId, setMsaId] = useState(null);
+  const [fileUrl, setFileUrl] = useState(null);
 
-  const handleCompanyChange = (e) => {
-    setCompanyId(e.target.value);
+  const handleMsaChange = (e) => {
+    setMsaId(e.target.value);
   };
 
   const handleFileChange = (e) => {
@@ -17,44 +18,47 @@ const Dashboard = () => {
   };
 
   const handleFileUpload = async () => {
+    const toastId = toast.loading("Uploading file");
     const uploadToS3Res = await uploadToS3(selectedFile);
 
     try {
-      const res = await axios.put(
-        `api/v1/companies/${companyId}`,
+      const res = await axios.patch(
+        `api/v1/msas/${msaId}`,
         {
-          logo: uploadToS3Res.blob_signed_id,
+          document: uploadToS3Res.blob_signed_id,
         },
         withToken()
       );
       if (res.status === 200) {
         console.log(res);
-        setLogoUrl(res.data.logo_url);
-      } else {
-        console.log("Error trying to update vendor");
+        setFileUrl(res.data.document_url);
+        toast.success("File uploaded!", { id: toastId });
       }
     } catch (err) {
       console.log("Error trying to update vendor");
+      toast.error("Error uploading file", { id: toastId });
     }
   };
 
   return (
     <div className="p-8">
-      <div className="mb-4">This is a throwaway page for testing file uploads</div>
+      <div className="mb-4">
+        This is a throwaway page for testing file uploads
+      </div>
       <p>let's upload a file</p>
       <div>
         <label
           htmlFor="companyName"
           className="block text-sm font-medium text-gray-700"
         >
-          Company ID
+          MSA ID
         </label>
         <div className="mt-1">
           <input
             id="companyName"
             name="companyName"
             type="text"
-            onChange={handleCompanyChange}
+            onChange={handleMsaChange}
             required
             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
@@ -69,12 +73,10 @@ const Dashboard = () => {
           Upload!
         </button>
       </div>
-      {logoUrl ? (
-        <img
-          className="inline-block h-14 w-14 rounded-full mt-4"
-          src={logoUrl}
-          alt=""
-        />
+      {fileUrl ? (
+        <a href={fileUrl} target="_blank" rel="noreferrer">
+          {fileUrl}
+        </a>
       ) : null}
     </div>
   );

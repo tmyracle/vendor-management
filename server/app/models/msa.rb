@@ -1,0 +1,16 @@
+class Msa < ApplicationRecord
+  belongs_to :vendor
+  has_one_attached :document
+
+  enum status: {
+    pending: 10,
+    negotiating: 20,
+    executed: 30
+  }
+
+  def document_url
+    if document.attached?
+      document.blob.service_url
+    end
+  end
+end
