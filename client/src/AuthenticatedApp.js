@@ -29,7 +29,7 @@ import { withToken } from "./lib/authHandler";
 const navigation = [
   { name: "Dashboard", icon: HomeIcon, href: "/dashboard", current: true },
   {
-    name: "Vendors",
+    name: "Suppliers",
     icon: BriefcaseIcon,
     href: "/vendors",
     current: false,

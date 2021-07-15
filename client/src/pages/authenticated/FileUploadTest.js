@@ -1,31 +1,30 @@
 import React, { useState } from "react";
-import uploadToS3 from "../../lib/fileUpload";
 import axios from "axios";
 import { withToken } from "../../lib/authHandler";
 import toast from "react-hot-toast";
+import FileUploader from "../../components/FileUploader";
 
 const Dashboard = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
   const [msaId, setMsaId] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
+  const [s3Responses, setS3Responses] = useState(null);
 
   const handleMsaChange = (e) => {
     setMsaId(e.target.value);
   };
 
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
+  const handleS3Response = (s3Responses) => {
+    setS3Responses(s3Responses);
   };
 
   const handleFileUpload = async () => {
     const toastId = toast.loading("Uploading file");
-    const uploadToS3Res = await uploadToS3(selectedFile);
 
     try {
       const res = await axios.patch(
         `api/v1/msas/${msaId}`,
         {
-          document: uploadToS3Res.blob_signed_id,
+          document: s3Responses[0].blob_signed_id,
         },
         withToken()
       );
@@ -51,7 +50,7 @@ const Dashboard = () => {
           htmlFor="companyName"
           className="block text-sm font-medium text-gray-700"
         >
-          MSA ID
+          Object ID
         </label>
         <div className="mt-1">
           <input
@@ -64,10 +63,13 @@ const Dashboard = () => {
           />
         </div>
       </div>
-      <div>
-        <input type="file" onChange={handleFileChange} />
+      <div className="mt-2">
+        <FileUploader
+          multipleFilesAllowed={true}
+          handleS3Response={handleS3Response}
+        />
         <button
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="w-full flex justify-center mt-2 mb-4 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           onClick={handleFileUpload}
         >
           Upload!
