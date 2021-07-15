@@ -53,7 +53,7 @@ export const ContactCard = (props) => {
 
   return (
     <div
-      className="relative group rounded-lg border border-gray-300  bg-white px-6 py-5 shadow-sm hover:shadow-md flex items-center space-x-3 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 cursor-pointer"
+      className="relative group rounded-lg border border-gray-200  bg-white px-6 py-5 shadow-sm hover:shadow-md flex items-center space-x-3 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 cursor-pointer"
       onClick={handleContactClick}
     >
       <TrashIcon

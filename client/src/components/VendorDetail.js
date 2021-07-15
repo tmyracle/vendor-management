@@ -1,53 +1,59 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { withToken } from "../lib/authHandler";
-import { ChevronLeftIcon, PencilAltIcon } from "@heroicons/react/solid";
+import {
+  ChevronLeftIcon,
+  PencilAltIcon,
+  UserAddIcon,
+} from "@heroicons/react/solid";
 import { UserIcon } from "@heroicons/react/outline";
-import { UserAddIcon } from "@heroicons/react/solid";
 import ContactAddEditModal from "./ContactAddEditModal";
-import { ContactCard } from "./ContactCard";
-
-const tabs = [
-  { name: "Profile", href: "#", current: true },
-  { name: "Documents", href: "#", current: false },
-  { name: "Contacts", href: "#", current: false },
-];
+import MsaSection from "./vendor/MsaSection";
+import ContactSection from "./vendor/ContactsSection";
+import OverviewSection from "./vendor/OverviewSection";
+import MsaAddEditModal from "./MsaAddEditModal";
 
 const coverImageUrl =
   "https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 const VendorDetail = (props) => {
   const [vendor, setVendor] = useState(props.vendor);
-  const [mode, setMode] = useState(null);
+  const [contactModalMode, setContactModalMode] = useState(null);
+  const [msaModalMode, setMsaModalMode] = useState(null);
   const [contact, setContact] = useState(null);
+  const [msa, setMsa] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [contactAddEditModalOpen, setContactAddEditModalOpen] = useState(false);
-
-  const formatDate = (date) => {
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "2-digit",
-    }).format(new Date(date));
-  };
+  const [msaAddEditModalOpen, setMsaAddEditModalOpen] = useState(false);
 
   const toggleContactAddEditModal = () => {
     setContactAddEditModalOpen(!contactAddEditModalOpen);
   };
 
   const toggleContactAddModal = () => {
-    setMode("add");
+    setContactModalMode("add");
     toggleContactAddEditModal();
   };
 
   const toggleContactEditModal = (contact) => {
-    setMode("edit");
+    setContactModalMode("edit");
     setContact(contact);
     toggleContactAddEditModal();
+  };
+
+  const toggleMsaAddEditModal = () => {
+    setMsaAddEditModalOpen(!msaAddEditModalOpen);
+  };
+
+  const toggleMsaAddModal = () => {
+    setMsaModalMode("add");
+    toggleMsaAddEditModal();
+  };
+
+  const toggleMsaEditModal = (msa) => {
+    setMsaModalMode("edit");
+    setMsa(msa);
+    toggleMsaAddEditModal();
   };
 
   const fetchVendor = useCallback(
@@ -94,7 +100,7 @@ const VendorDetail = (props) => {
         </a>
       </nav>
       {vendor ? (
-        <div>
+        <div className="mb-4">
           <article>
             {/* Profile header */}
             <div>
@@ -153,85 +159,23 @@ const VendorDetail = (props) => {
               </div>
             </div>
 
-            {/* Tabs */}
-            <div className="mt-6 sm:mt-2 2xl:mt-5">
-              <div className="border-b border-gray-200">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-                    {tabs.map((tab) => (
-                      <a
-                        key={tab.name}
-                        href={tab.href}
-                        className={classNames(
-                          tab.current
-                            ? "border-blue-500 text-gray-900"
-                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
-                          "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
-                        )}
-                        aria-current={tab.current ? "page" : undefined}
-                      >
-                        {tab.name}
-                      </a>
-                    ))}
-                  </nav>
-                </div>
-              </div>
-            </div>
+            {/* Vendor Overview */}
+            <OverviewSection vendor={vendor} />
 
-            {/* Description list */}
-            <div className="mt-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-              <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
-                <div className="sm:col-span-1">
-                  <dt className="text-sm font-medium text-gray-500">Website</dt>
-                  <a
-                    href={`https://${vendor.website}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-1 text-sm text-blue-500 hover:text-blue-700"
-                  >
-                    {vendor.website}
-                  </a>
-                </div>
+            {/* MSA section */}
+            <MsaSection
+              vendor={vendor}
+              toggleMsaAddModal={toggleMsaAddModal}
+              toggleMsaEditModal={toggleMsaEditModal}
+            />
 
-                <div className="sm:col-span-1">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Vendor Added
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900">
-                    {formatDate(vendor.created_at)}
-                  </dd>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <dt className="text-sm font-medium text-gray-500">About</dt>
-                  <dd
-                    className="mt-1 max-w-prose text-sm text-gray-900 space-y-5"
-                    dangerouslySetInnerHTML={{ __html: vendor.description }}
-                  />
-                </div>
-              </dl>
-            </div>
-
-            {/* Contact list */}
-            {vendor.contacts && vendor.contacts.length > 0 ? (
-              <div className="mt-8 max-w-5xl mx-auto px-4 pb-12 sm:px-6 lg:px-8">
-                <h2 className="text-sm font-medium text-gray-500">Contacts</h2>
-                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-1">
-                  {vendor.contacts.map((contact) => (
-                    <ContactCard
-                      contact={contact}
-                      key={contact.id}
-                      fetchVendor={() => {
-                        fetchVendor(true);
-                      }}
-                      toggleContactEditModal={() => {
-                        toggleContactEditModal(contact);
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            ) : null}
+            {/* Contacts section */}
+            <ContactSection
+              vendor={vendor}
+              fetchVendor={fetchVendor}
+              toggleContactEditModal={toggleContactEditModal}
+              toggleContactAddModal={toggleContactAddModal}
+            />
           </article>
         </div>
       ) : (
@@ -241,9 +185,19 @@ const VendorDetail = (props) => {
       )}
       <ContactAddEditModal
         isOpen={contactAddEditModalOpen}
-        mode={mode}
+        mode={contactModalMode}
         contact={contact}
         toggleContactAddEditModal={toggleContactAddEditModal}
+        vendor={vendor}
+        fetchVendor={() => {
+          fetchVendor(true);
+        }}
+      />
+      <MsaAddEditModal
+        isOpen={msaAddEditModalOpen}
+        mode={msaModalMode}
+        msa={msa}
+        toggleMsaAddEditModal={toggleMsaAddEditModal}
         vendor={vendor}
         fetchVendor={() => {
           fetchVendor(true);

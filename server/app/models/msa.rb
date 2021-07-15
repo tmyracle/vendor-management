@@ -13,4 +13,10 @@ class Msa < ApplicationRecord
       document.blob.service_url
     end
   end
+
+  def document_name
+    if document.attached?
+      document.blob.filename
+    end
+  end
 end

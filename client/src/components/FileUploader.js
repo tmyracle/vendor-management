@@ -29,7 +29,7 @@ const FileUploader = (props) => {
     <>
       <div
         {...getRootProps()}
-        className="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 hover:border-blue-500 border-dashed rounded-md bg-white cursor-pointer"
+        className="flex justify-center mb-2 px-6 pt-5 pb-6 border-2 border-gray-300 hover:border-blue-500 border-dashed rounded-md bg-white cursor-pointer"
       >
         <div className="space-y-1 text-center">
           <CloudUploadIcon className="mx-auto h-12 w-12 text-gray-400" />

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import axios from "axios";
 import { withToken } from "../lib/authHandler";
 import { Dialog, Transition } from "@headlessui/react";
@@ -15,7 +15,6 @@ const schema = yup.object().shape({
 });
 
 const VendorAddModal = (props) => {
-  const [errorMessage, setErrorMessage] = useState("");
   const { register, handleSubmit, reset } = useForm({
     resolver: yupResolver(schema),
   });
@@ -41,10 +40,8 @@ const VendorAddModal = (props) => {
     } catch (err) {
       if (err.response.data.message) {
         toast.error(err.response.data.message);
-        setErrorMessage(err.response.data.message);
       } else {
         toast.error("Something went wrong.");
-        setErrorMessage("Something went wrong.");
       }
     }
   };
@@ -111,11 +108,6 @@ const VendorAddModal = (props) => {
                         Add a new vendor
                       </Dialog.Title>
                       <div className="space-y-6 mt-4">
-                        {errorMessage ? (
-                          <div className="text-red-500">{errorMessage}</div>
-                        ) : (
-                          <></>
-                        )}
                         <div>
                           <label
                             htmlFor="name"
@@ -171,7 +163,6 @@ const VendorAddModal = (props) => {
                     <button
                       type="submit"
                       className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:col-start-2 sm:text-sm"
-                      onClick={handleVendorAddSubmit}
                     >
                       Add
                     </button>
