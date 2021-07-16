@@ -8,6 +8,8 @@ import { DocumentAddIcon } from "@heroicons/react/solid";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import FileUploader from "./FileUploader";
+import { DateInput } from "@blueprintjs/datetime";
+import { Position } from "@blueprintjs/core";
 
 const schema = yup.object().shape({
   status: yup.string().required("Status is a required field"),
@@ -17,12 +19,18 @@ const schema = yup.object().shape({
 
 const MsaAddEditModal = (props) => {
   const [s3Responses, setS3Responses] = useState(null);
+  const [date, setDate] = useState(null);
   const { register, handleSubmit, reset } = useForm({
     resolver: yupResolver(schema),
   });
 
   const handleS3Response = (s3Responses) => {
     setS3Responses(s3Responses);
+  };
+
+  const handleDateChange = (date) => {
+    console.log(date);
+    //setDate(date);
   };
 
   useEffect(() => {
@@ -163,6 +171,17 @@ const MsaAddEditModal = (props) => {
                               Execution Date
                             </label>
                             <div className="mt-1">
+                              <DateInput
+                                className="z-50"
+                                defaultValue={new Date()}
+                                closeOnSelection={true}
+                                formatDate={(date) => date.toLocaleString()}
+                                onChange={handleDateChange}
+                                popoverProps={{ position: Position.BOTTOM }}
+                                parseDate={(str) => new Date(str)}
+                                placeholder={"M/D/YYYY"}
+                                value={date}
+                              />
                               <input
                                 type="text"
                                 autoComplete="off"

@@ -4,6 +4,8 @@
   "private": true,
   "proxy": "http://localhost:3001",
   "dependencies": {
+    "@blueprintjs/core": "^3.47.0",
+    "@blueprintjs/datetime": "^3.23.6",
     "@craco/craco": "^6.1.2",
     "@headlessui/react": "^1.2.0",
     "@heroicons/react": "^1.0.1",
