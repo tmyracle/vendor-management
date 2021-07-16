@@ -7,11 +7,13 @@ import {
   UserAddIcon,
 } from "@heroicons/react/solid";
 import { UserIcon } from "@heroicons/react/outline";
-import ContactAddEditModal from "./ContactAddEditModal";
-import MsaSection from "./vendor/MsaSection";
-import ContactSection from "./vendor/ContactsSection";
 import OverviewSection from "./vendor/OverviewSection";
+import MsaSection from "./vendor/MsaSection";
+import CoiSection from "./vendor/CoiSection";
+import ContactSection from "./vendor/ContactsSection";
 import MsaAddEditModal from "./MsaAddEditModal";
+import CoiAddEditModal from "./CoiAddEditModal";
+import ContactAddEditModal from "./ContactAddEditModal";
 
 const coverImageUrl =
   "https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80";
@@ -20,11 +22,14 @@ const VendorDetail = (props) => {
   const [vendor, setVendor] = useState(props.vendor);
   const [contactModalMode, setContactModalMode] = useState(null);
   const [msaModalMode, setMsaModalMode] = useState(null);
+  const [coiModalMode, setCoiModalMode] = useState(null);
   const [contact, setContact] = useState(null);
   const [msa, setMsa] = useState(null);
+  const [coi, setCoi] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [contactAddEditModalOpen, setContactAddEditModalOpen] = useState(false);
   const [msaAddEditModalOpen, setMsaAddEditModalOpen] = useState(false);
+  const [coiAddEditModalOpen, setCoiAddEditModalOpen] = useState(false);
 
   const toggleContactAddEditModal = () => {
     setContactAddEditModalOpen(!contactAddEditModalOpen);
@@ -54,6 +59,21 @@ const VendorDetail = (props) => {
     setMsaModalMode("edit");
     setMsa(msa);
     toggleMsaAddEditModal();
+  };
+
+  const toggleCoiAddEditModal = () => {
+    setCoiAddEditModalOpen(!coiAddEditModalOpen);
+  };
+
+  const toggleCoiAddModal = () => {
+    setCoiModalMode("add");
+    toggleCoiAddEditModal();
+  };
+
+  const toggleCoiEditModal = (msa) => {
+    setCoiModalMode("edit");
+    setCoi(msa);
+    toggleCoiAddEditModal();
   };
 
   const handleVendorUpdate = (vendor) => {
@@ -174,6 +194,14 @@ const VendorDetail = (props) => {
               toggleMsaEditModal={toggleMsaEditModal}
             />
 
+            {/* COI section */}
+            <CoiSection
+              vendor={vendor}
+              updateVendor={handleVendorUpdate}
+              toggleCoiAddModal={toggleCoiAddModal}
+              toggleCoiEditModal={toggleCoiEditModal}
+            />
+
             {/* Contacts section */}
             <ContactSection
               vendor={vendor}
@@ -203,6 +231,16 @@ const VendorDetail = (props) => {
         mode={msaModalMode}
         msa={msa}
         toggleMsaAddEditModal={toggleMsaAddEditModal}
+        vendor={vendor}
+        fetchVendor={() => {
+          fetchVendor(true);
+        }}
+      />
+      <CoiAddEditModal
+        isOpen={coiAddEditModalOpen}
+        mode={coiModalMode}
+        coi={coi}
+        toggleCoiAddEditModal={toggleCoiAddEditModal}
         vendor={vendor}
         fetchVendor={() => {
           fetchVendor(true);

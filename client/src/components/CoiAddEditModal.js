@@ -12,23 +12,17 @@ import { DateInput } from "@blueprintjs/datetime";
 import { Position } from "@blueprintjs/core";
 
 const schema = yup.object().shape({
-  status: yup.string().required("Status is a required field"),
-  executed_on: yup.date(),
+  policy_effective: yup.date(),
+  policy_expires: yup.date(),
   vendor_id: yup.number(),
 });
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-const MsaAddEditModal = (props) => {
+const CoiAddEditModal = (props) => {
   const [s3Responses, setS3Responses] = useState(null);
   const [date, setDate] = useState(null);
-  const { register, handleSubmit, reset, watch } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     resolver: yupResolver(schema),
   });
-
-  const msaStatus = watch("status");
 
   const handleS3Response = (s3Responses) => {
     setS3Responses(s3Responses);
@@ -52,35 +46,35 @@ const MsaAddEditModal = (props) => {
   };
 
   useEffect(() => {
-    if (props.mode === "edit" && props.msa) {
+    if (props.mode === "edit" && props.coi) {
       const defaults = {
-        status: props.msa.status,
-        executedOn: props.msa.executed_on,
+        policyEffective: props.coi.policy_effective,
+        policyExpires: props.coi.policy_expires,
       };
       reset(defaults);
     } else {
       reset({
-        status: "",
-        executedOn: "",
+        policyEffective: "",
+        policyExpires: "",
       });
     }
-  }, [props.msa, props.mode, reset]);
+  }, [props.coi, props.mode, reset]);
 
-  const handleMsaSubmit = async (data) => {
+  const handleCoiSubmit = async (data) => {
     const payload = {
-      status: data.status,
-      executed_on: data.executedOn,
+      policy_effective: data.policyEffective,
+      policy_expires: data.policyExpires,
       vendor_id: props.vendor.id,
       document: s3Responses ? s3Responses[0].blob_signed_id : null,
     };
 
     if (props.mode === "add") {
       try {
-        const res = await axios.post("/api/v1/msas", payload, withToken());
+        const res = await axios.post("/api/v1/cois", payload, withToken());
         if (res.status === 200) {
-          toast.success(`MSA added for ${props.vendor.name}`);
+          toast.success(`COI added for ${props.vendor.name}`);
           props.fetchVendor();
-          props.toggleMsaAddEditModal();
+          props.toggleCoiAddEditModal();
           reset();
         }
       } catch (err) {
@@ -89,14 +83,14 @@ const MsaAddEditModal = (props) => {
     } else if (props.mode === "edit") {
       try {
         const res = await axios.patch(
-          `/api/v1/msas/${props.msa.id}`,
+          `/api/v1/cois/${props.coi.id}`,
           payload,
           withToken()
         );
         if (res.status === 200) {
-          toast.success(`MSA updated.`);
+          toast.success(`COI updated`);
           props.fetchVendor();
-          props.toggleMsaAddEditModal();
+          props.toggleCoiAddEditModal();
           reset();
         }
       } catch (err) {
@@ -114,7 +108,7 @@ const MsaAddEditModal = (props) => {
           className="fixed z-10 inset-0 overflow-y-auto"
           initialFocus={null}
           open={props.isOpen}
-          onClose={props.toggleMsaAddEditModal}
+          onClose={props.toggleCoiAddEditModal}
         >
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child
@@ -146,7 +140,7 @@ const MsaAddEditModal = (props) => {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                <form onSubmit={handleSubmit(handleMsaSubmit)}>
+                <form onSubmit={handleSubmit(handleCoiSubmit)}>
                   <div>
                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
                       <DocumentAddIcon
@@ -159,45 +153,20 @@ const MsaAddEditModal = (props) => {
                         as="h3"
                         className="text-lg leading-6 font-medium text-gray-900 text-center"
                       >
-                        {props.mode === "add" ? "Add" : "Edit"} MSA for{" "}
+                        {props.mode === "add" ? "Add" : "Edit"} COI for{" "}
                         {props.vendor.name}
                       </Dialog.Title>
                       <div className="space-y-3 mt-4">
                         <div className="grid grid-cols-6 gap-3">
-                          <div
-                            className={classNames(
-                              msaStatus === "executed"
-                                ? "col-span-6 sm:col-span-3"
-                                : "sm:col-span-6"
-                            )}
-                          >
+                          <div className="col-span-6 sm:col-span-3">
                             <label
-                              htmlFor="status"
+                              htmlFor="title"
                               className="block text-sm font-medium text-gray-700"
                             >
-                              Status
+                              Policy effective
                             </label>
-                            <select
-                              id="location"
-                              {...register("status", { required: true })}
-                              defaultValue=""
-                              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                            >
-                              <option value="pending">Pending</option>
-                              <option value="negotiating">Negotiating</option>
-                              <option value="executed">Executed</option>
-                            </select>
-                          </div>
-                          {msaStatus === "executed" ? (
-                            <div className="col-span-6 sm:col-span-3">
-                              <label
-                                htmlFor="title"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                Executed on
-                              </label>
-                              <div className="mt-1">
-                                {/*
+                            <div className="mt-1">
+                              {/*
                               <DateInput
                                 defaultValue={new Date()}
                                 closeOnSelection={false}
@@ -210,18 +179,37 @@ const MsaAddEditModal = (props) => {
                               />
                               */}
 
-                                <input
-                                  type="text"
-                                  autoComplete="off"
-                                  {...register("executedOn")}
-                                  onBlur={(e) => {
-                                    e.target.value = parseDateFromString(e);
-                                  }}
-                                  className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                />
-                              </div>
+                              <input
+                                type="text"
+                                autoComplete="off"
+                                {...register("policyEffective")}
+                                onBlur={(e) => {
+                                  e.target.value = parseDateFromString(e);
+                                }}
+                                className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                              />
                             </div>
-                          ) : null}
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-3">
+                            <label
+                              htmlFor="title"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Policy expires
+                            </label>
+                            <div className="mt-1">
+                              <input
+                                type="text"
+                                autoComplete="off"
+                                {...register("policyExpires")}
+                                onBlur={(e) => {
+                                  e.target.value = parseDateFromString(e);
+                                }}
+                                className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                              />
+                            </div>
+                          </div>
 
                           <div className="col-span-6">
                             <FileUploader
@@ -252,7 +240,7 @@ const MsaAddEditModal = (props) => {
                       <button
                         type="button"
                         className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
-                        onClick={props.toggleMsaAddEditModal}
+                        onClick={props.toggleCoiAddEditModal}
                       >
                         Cancel
                       </button>
@@ -268,4 +256,4 @@ const MsaAddEditModal = (props) => {
   );
 };
 
-export default MsaAddEditModal;
+export default CoiAddEditModal;
