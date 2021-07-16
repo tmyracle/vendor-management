@@ -1,13 +1,38 @@
-import React, { useState } from "react";
+import axios from "axios";
 import { Switch } from "@headlessui/react";
 import { DocumentAddIcon } from "@heroicons/react/solid";
+import { DocumentIcon } from "@heroicons/react/outline";
+import toast from "react-hot-toast";
+import { withToken } from "../../lib/authHandler";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const MsaSection = (props) => {
-  const [enabled, setEnabled] = useState(false);
+  const formatDate = (date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "2-digit",
+    }).format(new Date(date));
+  };
+
+  const handleVendorUpdate = async () => {
+    try {
+      const res = await axios.patch(
+        `/api/v1/vendors/${props.vendor.id}`,
+        { msa_required: !props.vendor.msa_required },
+        withToken()
+      );
+      if (res.status === 200) {
+        toast.success("MSA requirement updated");
+        props.updateVendor(res.data);
+      }
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
+  };
 
   return (
     <section
@@ -23,10 +48,10 @@ const MsaSection = (props) => {
             MSA
           </h2>
           <Switch
-            checked={enabled}
-            onChange={setEnabled}
+            checked={props.vendor.msa_required}
+            onChange={handleVendorUpdate}
             className={classNames(
-              enabled ? "bg-green-600" : "bg-gray-200",
+              props.vendor.msa_required ? "bg-green-600" : "bg-gray-200",
               "relative inline-flex float-right flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             )}
           >
@@ -34,16 +59,38 @@ const MsaSection = (props) => {
             <span
               aria-hidden="true"
               className={classNames(
-                enabled ? "translate-x-5" : "translate-x-0",
+                props.vendor.msa_required ? "translate-x-5" : "translate-x-0",
                 "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
               )}
             />
           </Switch>
         </div>
-        {enabled ? (
+        {props.vendor.msa_required ? (
           <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-            {props.vendor.msas.length >= 1 ? (
-              <div>MSA GOES HERE </div>
+            {props.vendor.msas && props.vendor.msas.length >= 1 ? (
+              <div className="relative grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2 rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-sm hover:shadow-md focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 cursor-pointer">
+                <div className="sm:col-span-2 flex">
+                  <DocumentIcon className="h-6 w-6 inline" />
+                  <span className="font-medium ml-2 text-gray-900 truncate">
+                    {props.vendor.msas[0].document_name}
+                  </span>
+                </div>
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-gray-500">Status</dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {props.vendor.msas[0].status.charAt(0).toUpperCase() +
+                      props.vendor.msas[0].status.slice(1)}
+                  </dd>
+                </div>
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Uploaded on
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {formatDate(props.vendor.msas[0].created_at)}
+                  </dd>
+                </div>
+              </div>
             ) : (
               <div className="text-center">
                 <h3 className="mt-2 text-sm font-medium text-gray-900">

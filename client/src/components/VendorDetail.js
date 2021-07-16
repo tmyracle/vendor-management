@@ -56,6 +56,10 @@ const VendorDetail = (props) => {
     toggleMsaAddEditModal();
   };
 
+  const handleVendorUpdate = (vendor) => {
+    setVendor(vendor);
+  };
+
   const fetchVendor = useCallback(
     async (isMounted) => {
       try {
@@ -165,6 +169,7 @@ const VendorDetail = (props) => {
             {/* MSA section */}
             <MsaSection
               vendor={vendor}
+              updateVendor={handleVendorUpdate}
               toggleMsaAddModal={toggleMsaAddModal}
               toggleMsaEditModal={toggleMsaEditModal}
             />

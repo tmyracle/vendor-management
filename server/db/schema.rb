@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_14_044006) do
+ActiveRecord::Schema.define(version: 2021_07_16_051537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,6 +101,9 @@ ActiveRecord::Schema.define(version: 2021_07_14_044006) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "company_id"
+    t.boolean "msa_required", default: true
+    t.boolean "coi_required", default: true
+    t.boolean "w9_required", default: true
     t.index ["company_id"], name: "index_vendors_on_company_id"
   end
 
