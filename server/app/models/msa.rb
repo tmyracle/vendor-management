@@ -25,5 +25,4 @@ class Msa < ApplicationRecord
       User.find(uploaded_by).full_name
     end
   end
-
 end

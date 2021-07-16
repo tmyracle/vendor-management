@@ -166,19 +166,6 @@ const CoiAddEditModal = (props) => {
                               Policy effective
                             </label>
                             <div className="mt-1">
-                              {/*
-                              <DateInput
-                                defaultValue={new Date()}
-                                closeOnSelection={false}
-                                formatDate={(date) => date.toLocaleString()}
-                                onChange={handleDateChange}
-                                popoverProps={{ position: Position.BOTTOM }}
-                                parseDate={(str) => new Date(str)}
-                                placeholder={"M/D/YYYY"}
-                                value={date}
-                              />
-                              */}
-
                               <input
                                 type="text"
                                 autoComplete="off"
