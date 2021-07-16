@@ -69,17 +69,28 @@ const MsaSection = (props) => {
           <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
             {props.vendor.msas && props.vendor.msas.length >= 1 ? (
               <div className="relative grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2 rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-sm hover:shadow-md focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 cursor-pointer">
-                <div className="sm:col-span-2 flex">
-                  <DocumentIcon className="h-6 w-6 inline" />
-                  <span className="font-medium ml-2 text-gray-900 truncate">
-                    {props.vendor.msas[0].document_name}
-                  </span>
-                </div>
+                {props.vendor.msas[0].document_name ? (
+                  <div className="sm:col-span-2 flex">
+                    <DocumentIcon className="h-6 w-6 inline" />
+                    <span className="font-medium ml-2 text-gray-900 truncate">
+                      {props.vendor.msas[0].document_name}
+                    </span>
+                  </div>
+                ) : null}
+
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-medium text-gray-500">Status</dt>
                   <dd className="mt-1 text-sm text-gray-900">
                     {props.vendor.msas[0].status.charAt(0).toUpperCase() +
                       props.vendor.msas[0].status.slice(1)}
+                  </dd>
+                </div>
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Uploaded by
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {props.vendor.msas[0].uploader}
                   </dd>
                 </div>
                 <div className="sm:col-span-1">
@@ -90,6 +101,16 @@ const MsaSection = (props) => {
                     {formatDate(props.vendor.msas[0].created_at)}
                   </dd>
                 </div>
+                {props.vendor.msas[0].status === "executed" ? (
+                  <div className="sm:col-span-1">
+                    <dt className="text-sm font-medium text-gray-500">
+                      Executed on
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900">
+                      {formatDate(props.vendor.msas[0].executed_on)}
+                    </dd>
+                  </div>
+                ) : null}
               </div>
             ) : (
               <div className="text-center">

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_16_051537) do
+ActiveRecord::Schema.define(version: 2021_07_16_170559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,16 @@ ActiveRecord::Schema.define(version: 2021_07_16_051537) do
     t.string "checksum", null: false
     t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "cois", force: :cascade do |t|
+    t.datetime "policy_effective"
+    t.datetime "policy_expires"
+    t.bigint "vendor_id", null: false
+    t.integer "uploaded_by"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["vendor_id"], name: "index_cois_on_vendor_id"
   end
 
   create_table "companies", force: :cascade do |t|
@@ -107,9 +117,21 @@ ActiveRecord::Schema.define(version: 2021_07_16_051537) do
     t.index ["company_id"], name: "index_vendors_on_company_id"
   end
 
+  create_table "w9s", force: :cascade do |t|
+    t.bigint "vendor_id", null: false
+    t.string "taxpayer_id_number"
+    t.datetime "executed_on"
+    t.integer "uploaded_by"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["vendor_id"], name: "index_w9s_on_vendor_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "cois", "vendors"
   add_foreign_key "contacts", "vendors"
   add_foreign_key "invitations", "users"
   add_foreign_key "msas", "vendors"
   add_foreign_key "vendors", "companies"
+  add_foreign_key "w9s", "vendors"
 end

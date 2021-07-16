@@ -33,6 +33,14 @@ const MsaAddEditModal = (props) => {
     //setDate(date);
   };
 
+  const parseDateFromString = (e) => {
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "2-digit",
+    }).format(new Date(e.target.value));
+  };
+
   useEffect(() => {
     if (props.mode === "edit" && props.msa) {
       const defaults = {
@@ -53,7 +61,7 @@ const MsaAddEditModal = (props) => {
       status: data.status,
       executed_on: data.executedOn,
       vendor_id: props.vendor.id,
-      document: s3Responses[0].blob_signed_id,
+      document: s3Responses ? s3Responses[0].blob_signed_id : null,
     };
 
     if (props.mode === "add") {
@@ -148,19 +156,21 @@ const MsaAddEditModal = (props) => {
                         <div className="grid grid-cols-6 gap-3">
                           <div className="col-span-6 sm:col-span-3">
                             <label
-                              htmlFor="name"
+                              htmlFor="status"
                               className="block text-sm font-medium text-gray-700"
                             >
                               Status
                             </label>
-                            <div className="mt-1">
-                              <input
-                                type="text"
-                                {...register("status", { required: true })}
-                                autoComplete="off"
-                                className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                              />
-                            </div>
+                            <select
+                              id="location"
+                              {...register("status", { required: true })}
+                              defaultValue=""
+                              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="negotiating">Negotiating</option>
+                              <option value="executedc">Executed</option>
+                            </select>
                           </div>
 
                           <div className="col-span-6 sm:col-span-3">
@@ -171,10 +181,10 @@ const MsaAddEditModal = (props) => {
                               Execution Date
                             </label>
                             <div className="mt-1">
+                              {/*
                               <DateInput
-                                className="z-50"
                                 defaultValue={new Date()}
-                                closeOnSelection={true}
+                                closeOnSelection={false}
                                 formatDate={(date) => date.toLocaleString()}
                                 onChange={handleDateChange}
                                 popoverProps={{ position: Position.BOTTOM }}
@@ -182,10 +192,15 @@ const MsaAddEditModal = (props) => {
                                 placeholder={"M/D/YYYY"}
                                 value={date}
                               />
+                              */}
+
                               <input
                                 type="text"
                                 autoComplete="off"
                                 {...register("executedOn")}
+                                onBlur={(e) => {
+                                  e.target.value = parseDateFromString(e);
+                                }}
                                 className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                               />
                             </div>

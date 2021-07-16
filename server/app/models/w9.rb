@@ -1,12 +1,6 @@
-class Msa < ApplicationRecord
+class W9 < ApplicationRecord
   belongs_to :vendor
   has_one_attached :document
-
-  enum status: {
-    pending: 10,
-    negotiating: 20,
-    executed: 30
-  }
 
   def document_url
     if document.attached?
@@ -25,5 +19,4 @@ class Msa < ApplicationRecord
       User.find(uploaded_by).full_name
     end
   end
-
 end
