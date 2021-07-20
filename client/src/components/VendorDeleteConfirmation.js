@@ -10,15 +10,15 @@ export const ContactDeleteConfirmation = (props) => {
 
   const deleteButtonRef = useRef(null);
 
-  const handleContactDelete = async () => {
+  const handleVendorDelete = async () => {
     try {
       const res = await axios.delete(
-        `/api/v1/contacts/${props.contact.id}`,
+        `/api/v1/vendors/${props.vendor.id}`,
         withToken()
       );
       if (res.status === 200) {
-        toast.success("Contact successfully deleted.");
-        props.fetchVendor(true);
+        toast.success("Vendor successfully deleted.");
+        //props.fetchVendor(true);
         setOpen(false);
       }
     } catch (err) {
@@ -78,11 +78,11 @@ export const ContactDeleteConfirmation = (props) => {
                     as="h3"
                     className="text-lg leading-6 font-medium text-gray-900"
                   >
-                    Delete contact
+                    Delete vendor
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Are you sure you want to delete this contact?
+                      Are you sure you want to delete this vendor?
                     </p>
                   </div>
                 </div>
@@ -92,7 +92,7 @@ export const ContactDeleteConfirmation = (props) => {
                   type="button"
                   ref={deleteButtonRef}
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={handleContactDelete}
+                  onClick={handleVendorDelete}
                 >
                   Delete
                 </button>

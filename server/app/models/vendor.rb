@@ -20,4 +20,12 @@ class Vendor < ApplicationRecord
       true
     end
   end
+
+  def w9_compliant
+    if w9_required
+      w9s[0].present? and w9s[0].taxpayer_id_number.present? and w9s[0].document.attached?
+    else
+      true
+    end
+  end
 end

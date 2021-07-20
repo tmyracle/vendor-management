@@ -9,7 +9,7 @@ module Api::V1
           {msas: {methods: [:document_url, :document_name, :uploader]}},
           {cois: {methods: [:document_url, :document_name, :uploader]}},
           {w9s: {methods: [:document_url, :document_name, :uploader]}}
-          ]), status: :ok
+          ], methods: [:msa_compliant, :coi_compliant, :w9_compliant]), status: :ok
       else
         render json: {message: "Problem adding new vendor. Make sure you provided a name."}, status: :internal_server_error
       end
@@ -23,7 +23,7 @@ module Api::V1
           {msas: {methods: [:document_url, :document_name, :uploader]}},
           {cois: {methods: [:document_url, :document_name, :uploader]}},
           {w9s: {methods: [:document_url, :document_name, :uploader]}}
-          ]), status: :ok
+          ], methods: [:msa_compliant, :coi_compliant, :w9_compliant]), status: :ok
       else
         render json: {message: "Something went wrong updating the vendor"}, status: :internal_server_error
       end
@@ -35,8 +35,8 @@ module Api::V1
         render json: vendor.as_json(include: [:contacts, 
           {msas: {methods: [:document_url, :document_name, :uploader]}},
           {cois: {methods: [:document_url, :document_name, :uploader]}},
-          {w9s: {methods: [:document_url, :document_name, :uploader]}}
-          ]), status: :ok
+          {w9s: {methods: [:document_url, :document_name, :uploader]}},
+          ], methods: [:msa_compliant, :coi_compliant, :w9_compliant]), status: :ok
       else
         render json: {message: "No vendor id provided."}, status: :internal_server_error
       end

@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import FileUploader from "./FileUploader";
 import { DateInput } from "@blueprintjs/datetime";
 import { Position } from "@blueprintjs/core";
+import "./datepicker.css";
 
 const schema = yup.object().shape({
   status: yup.string().required("Status is a required field"),
@@ -17,14 +18,15 @@ const schema = yup.object().shape({
   vendor_id: yup.number(),
 });
 
+const INPUT_STYLES = "mt-1 focus:ring-indigo-500 focus:border-indigo-500";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const MsaAddEditModal = (props) => {
   const [s3Responses, setS3Responses] = useState(null);
-  const [date, setDate] = useState(null);
-  const { register, handleSubmit, reset, watch } = useForm({
+  const { register, handleSubmit, reset, watch, setValue } = useForm({
     resolver: yupResolver(schema),
   });
 
@@ -35,20 +37,15 @@ const MsaAddEditModal = (props) => {
   };
 
   const handleDateChange = (date) => {
-    console.log(date);
-    //setDate(date);
+    setValue("executedOn", date);
   };
 
-  const parseDateFromString = (e) => {
-    if (e.target.value.length > 0) {
-      return new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "2-digit",
-      }).format(new Date(e.target.value));
-    } else {
-      return null;
-    }
+  const formatDate = (date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "2-digit",
+    }).format(date);
   };
 
   useEffect(() => {
@@ -110,7 +107,7 @@ const MsaAddEditModal = (props) => {
       <Transition.Root show={props.isOpen} as={Fragment}>
         <Dialog
           as="div"
-          static
+          static={true}
           className="fixed z-10 inset-0 overflow-y-auto"
           initialFocus={null}
           open={props.isOpen}
@@ -145,7 +142,7 @@ const MsaAddEditModal = (props) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+              <div className="inline-block align-bottom overflow-visible bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                 <form onSubmit={handleSubmit(handleMsaSubmit)}>
                   <div>
                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
@@ -196,30 +193,19 @@ const MsaAddEditModal = (props) => {
                               >
                                 Executed on
                               </label>
-                              <div className="mt-1">
-                                {/*
-                              <DateInput
-                                defaultValue={new Date()}
-                                closeOnSelection={false}
-                                formatDate={(date) => date.toLocaleString()}
-                                onChange={handleDateChange}
-                                popoverProps={{ position: Position.BOTTOM }}
-                                parseDate={(str) => new Date(str)}
-                                placeholder={"M/D/YYYY"}
-                                value={date}
-                              />
-                              */}
 
-                                <input
-                                  type="text"
-                                  autoComplete="off"
-                                  {...register("executedOn")}
-                                  onBlur={(e) => {
-                                    e.target.value = parseDateFromString(e);
-                                  }}
-                                  className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                />
-                              </div>
+                              <DateInput
+                                {...register("executedOn")}
+                                inputProps={{ className: INPUT_STYLES }}
+                                formatDate={(date) => formatDate(date)}
+                                onChange={handleDateChange}
+                                popoverProps={{
+                                  position: Position.BOTTOM,
+                                  usePortal: false,
+                                }}
+                                parseDate={(str) => new Date(str)}
+                                placeholder={"MM/DD/YYYY"}
+                              />
                             </div>
                           ) : null}
 

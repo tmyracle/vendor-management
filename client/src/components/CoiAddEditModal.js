@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import FileUploader from "./FileUploader";
 import { DateInput } from "@blueprintjs/datetime";
 import { Position } from "@blueprintjs/core";
+import "./datepicker.css";
 
 const schema = yup.object().shape({
   policy_effective: yup.date(),
@@ -17,32 +18,26 @@ const schema = yup.object().shape({
   vendor_id: yup.number(),
 });
 
+const INPUT_STYLES = "mt-1 focus:ring-indigo-500 focus:border-indigo-500";
+
 const CoiAddEditModal = (props) => {
   const [s3Responses, setS3Responses] = useState(null);
-  const [date, setDate] = useState(null);
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, setValue } = useForm({
     resolver: yupResolver(schema),
   });
+
+  let cancelButtonRef = useRef(null);
 
   const handleS3Response = (s3Responses) => {
     setS3Responses(s3Responses);
   };
 
-  const handleDateChange = (date) => {
-    console.log(date);
-    //setDate(date);
-  };
-
-  const parseDateFromString = (e) => {
-    if (e.target.value.length > 0) {
-      return new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "2-digit",
-      }).format(new Date(e.target.value));
-    } else {
-      return null;
-    }
+  const formatDate = (date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "2-digit",
+    }).format(date);
   };
 
   useEffect(() => {
@@ -106,7 +101,7 @@ const CoiAddEditModal = (props) => {
           as="div"
           static
           className="fixed z-10 inset-0 overflow-y-auto"
-          initialFocus={null}
+          initialFocus={cancelButtonRef}
           open={props.isOpen}
           onClose={props.toggleCoiAddEditModal}
         >
@@ -139,7 +134,7 @@ const CoiAddEditModal = (props) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+              <div className="inline-block align-bottom overflow-visible bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                 <form onSubmit={handleSubmit(handleCoiSubmit)}>
                   <div>
                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
@@ -165,17 +160,21 @@ const CoiAddEditModal = (props) => {
                             >
                               Policy effective
                             </label>
-                            <div className="mt-1">
-                              <input
-                                type="text"
-                                autoComplete="off"
-                                {...register("policyEffective")}
-                                onBlur={(e) => {
-                                  e.target.value = parseDateFromString(e);
-                                }}
-                                className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                              />
-                            </div>
+
+                            <DateInput
+                              {...register("policyEffective")}
+                              inputProps={{ className: INPUT_STYLES }}
+                              formatDate={(date) => formatDate(date)}
+                              onChange={(date) =>
+                                setValue("policyEffective", date)
+                              }
+                              popoverProps={{
+                                position: Position.BOTTOM,
+                                usePortal: false,
+                              }}
+                              parseDate={(str) => new Date(str)}
+                              placeholder={"MM/DD/YYYY"}
+                            />
                           </div>
 
                           <div className="col-span-6 sm:col-span-3">
@@ -185,17 +184,20 @@ const CoiAddEditModal = (props) => {
                             >
                               Policy expires
                             </label>
-                            <div className="mt-1">
-                              <input
-                                type="text"
-                                autoComplete="off"
-                                {...register("policyExpires")}
-                                onBlur={(e) => {
-                                  e.target.value = parseDateFromString(e);
-                                }}
-                                className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                              />
-                            </div>
+                            <DateInput
+                              {...register("policyExpires")}
+                              inputProps={{ className: INPUT_STYLES }}
+                              formatDate={(date) => formatDate(date)}
+                              onChange={(date) =>
+                                setValue("policyExpires", date)
+                              }
+                              popoverProps={{
+                                position: Position.BOTTOM,
+                                usePortal: false,
+                              }}
+                              parseDate={(str) => new Date(str)}
+                              placeholder={"MM/DD/YYYY"}
+                            />
                           </div>
 
                           <div className="col-span-6">
@@ -226,6 +228,7 @@ const CoiAddEditModal = (props) => {
 
                       <button
                         type="button"
+                        ref={cancelButtonRef}
                         className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
                         onClick={props.toggleCoiAddEditModal}
                       >
