@@ -22,6 +22,10 @@ const CoiSection = (props) => {
     }).format(new Date(date));
   };
 
+  const handleEditClick = () => {
+    props.toggleCoiEditModal(props.vendor.cois[0]);
+  };
+
   const handleVendorUpdate = async () => {
     try {
       const res = await axios.patch(
@@ -88,12 +92,24 @@ const CoiSection = (props) => {
                         Download
                       </a>
                       <span className="text-gray-300 mx-2">|</span>
-                      <span className="font-medium text-blue-600 hover:text-blue-500 hover:underline cursor-pointer">
+                      <span
+                        onClick={handleEditClick}
+                        className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer"
+                      >
                         Edit
                       </span>
                     </div>
                   </div>
-                ) : null}
+                ) : (
+                  <div className="col-span-2 flex items-center justify-end text-sm absolute right-6 top-5">
+                    <span
+                      onClick={handleEditClick}
+                      className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer"
+                    >
+                      Edit
+                    </span>
+                  </div>
+                )}
 
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-medium text-gray-500">Status</dt>

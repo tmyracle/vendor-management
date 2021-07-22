@@ -55,7 +55,7 @@ export const ContactCard = (props) => {
   };
 
   return (
-    <div className="relative group rounded-lg border border-gray-200  bg-white px-6 py-5 shadow-sm flex items-center space-x-3">
+    <div className="relative group rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-sm flex items-center space-x-3">
       <div className="flex-shrink-0">
         <div className="h-12 w-12 flex rounded-full bg-gray-200 text-center justify-center items-center">
           <span>{getInitials(props.contact.name)}</span>
@@ -75,14 +75,14 @@ export const ContactCard = (props) => {
           <div className="ml-4 flex-shrink-0">
             <span
               onClick={handleRemoveClick}
-              className="font-medium text-blue-600 hover:text-blue-500 hover:underline cursor-pointer"
+              className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer"
             >
               Remove
             </span>
             <span className="text-gray-300 mx-2">|</span>
             <span
               onClick={handleEditClick}
-              className="font-medium inline text-blue-600 hover:text-blue-500 hover:underline cursor-pointer"
+              className="font-medium inline text-blue-600 hover:text-blue-500 cursor-pointer"
             >
               Edit
             </span>

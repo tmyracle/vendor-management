@@ -73,7 +73,7 @@ const MsaSection = (props) => {
             {props.vendor.msas && props.vendor.msas.length >= 1 ? (
               <div className="relative grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2 rounded-lg bg-white px-6 py-5 shadow-sm">
                 {props.vendor.msas[0].document_name ? (
-                  <div className="pl-3 pr-4 py-3 col-span-2 flex items-center justify-between text-sm border border-gray-200 rounded-md">
+                  <div className="p-3 col-span-2 flex items-center justify-between text-sm border border-gray-200 rounded-md">
                     <div className="w-0 flex-1 flex items-center">
                       <PaperClipIcon
                         className="flex-shrink-0 h-5 w-5 text-gray-400"
@@ -95,7 +95,7 @@ const MsaSection = (props) => {
                       <span className="text-gray-300 mx-2">|</span>
                       <span
                         onClick={handleEditClick}
-                        className="font-medium text-blue-600 hover:text-blue-500 hover:underline cursor-pointer"
+                        className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer"
                       >
                         Edit
                       </span>
@@ -105,7 +105,7 @@ const MsaSection = (props) => {
                   <div className="col-span-2 flex items-center justify-end text-sm absolute right-6 top-5">
                     <span
                       onClick={handleEditClick}
-                      className="font-medium text-blue-600 hover:text-blue-500 hover:underline cursor-pointer"
+                      className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer"
                     >
                       Edit
                     </span>

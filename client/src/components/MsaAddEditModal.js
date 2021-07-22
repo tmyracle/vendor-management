@@ -252,7 +252,7 @@ const MsaAddEditModal = (props) => {
                                 <div className="ml-4 flex-shrink-0">
                                   <span
                                     onClick={handleDocumentRemove}
-                                    className="font-medium text-red-600 hover:text-red-500 hover:underline cursor-pointer"
+                                    className="font-medium text-red-600 hover:text-red-500 cursor-pointer"
                                   >
                                     Remove
                                   </span>

@@ -1,6 +1,6 @@
 class Msa < ApplicationRecord
   belongs_to :vendor
-  has_one_attached :document
+  has_one_attached :document, dependent: :destroy
 
   enum status: {
     pending: 10,

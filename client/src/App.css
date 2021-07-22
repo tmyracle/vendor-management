@@ -13,3 +13,7 @@
 .bp3-popover-target {
   width: 100%;
 }
+
+a:hover {
+  text-decoration: none !important;
+}

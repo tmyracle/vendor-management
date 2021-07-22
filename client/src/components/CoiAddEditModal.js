@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { withToken } from "../lib/authHandler";
-import { DocumentAddIcon } from "@heroicons/react/solid";
+import { DocumentAddIcon, PaperClipIcon } from "@heroicons/react/solid";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import FileUploader from "./FileUploader";
@@ -21,7 +21,8 @@ const INPUT_STYLES = "mt-1 focus:ring-indigo-500 focus:border-indigo-500";
 
 const CoiAddEditModal = (props) => {
   const [s3Responses, setS3Responses] = useState(null);
-  const { register, handleSubmit, reset, setValue } = useForm({
+  const [hasExistingFile, setHasExistingFile] = useState();
+  const { register, handleSubmit, reset, setValue, getValues } = useForm({
     resolver: yupResolver(schema),
   });
 
@@ -29,6 +30,26 @@ const CoiAddEditModal = (props) => {
 
   const handleS3Response = (s3Responses) => {
     setS3Responses(s3Responses);
+  };
+
+  const setPolicyEffectiveDefault = () => {
+    let initValue = getValues("policyEffective");
+    return initValue && initValue.length > 1 ? new Date(initValue) : new Date();
+  };
+
+  const setPolicyExpiresDefault = () => {
+    let initValue = getValues("policyExpires");
+    return initValue && initValue.length > 1 ? new Date(initValue) : new Date();
+  };
+
+  const handleDocumentRemove = async () => {
+    setHasExistingFile(false);
+  };
+
+  const handleModalClose = () => {
+    props.toggleCoiAddEditModal();
+    setHasExistingFile();
+    setS3Responses(null);
   };
 
   const formatDate = (date) => {
@@ -54,6 +75,12 @@ const CoiAddEditModal = (props) => {
     }
   }, [props.coi, props.mode, reset]);
 
+  useEffect(() => {
+    setHasExistingFile(
+      props.coi && props.coi.document_name && props.coi.document_name.length > 0
+    );
+  }, [props.coi]);
+
   const handleCoiSubmit = async (data) => {
     const payload = {
       policy_effective: data.policyEffective,
@@ -68,7 +95,7 @@ const CoiAddEditModal = (props) => {
         if (res.status === 200) {
           toast.success(`COI added for ${props.vendor.name}`);
           props.fetchVendor();
-          props.toggleCoiAddEditModal();
+          handleModalClose();
           reset();
         }
       } catch (err) {
@@ -76,6 +103,9 @@ const CoiAddEditModal = (props) => {
       }
     } else if (props.mode === "edit") {
       try {
+        if (hasExistingFile === false && s3Responses === null) {
+          payload.remove_file = true;
+        }
         const res = await axios.patch(
           `/api/v1/cois/${props.coi.id}`,
           payload,
@@ -84,7 +114,7 @@ const CoiAddEditModal = (props) => {
         if (res.status === 200) {
           toast.success(`COI updated`);
           props.fetchVendor();
-          props.toggleCoiAddEditModal();
+          handleModalClose();
           reset();
         }
       } catch (err) {
@@ -102,7 +132,7 @@ const CoiAddEditModal = (props) => {
           className="fixed z-10 inset-0 overflow-y-auto"
           initialFocus={cancelButtonRef}
           open={props.isOpen}
-          onClose={props.toggleCoiAddEditModal}
+          onClose={handleModalClose}
         >
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child
@@ -171,6 +201,7 @@ const CoiAddEditModal = (props) => {
                                 position: Position.BOTTOM,
                                 usePortal: false,
                               }}
+                              defaultValue={setPolicyEffectiveDefault()}
                               parseDate={(str) => new Date(str)}
                               placeholder={"MM/DD/YYYY"}
                             />
@@ -194,16 +225,40 @@ const CoiAddEditModal = (props) => {
                                 position: Position.BOTTOM,
                                 usePortal: false,
                               }}
+                              defaultValue={setPolicyExpiresDefault()}
+                              maxDate={new Date("12/31/2025")}
                               parseDate={(str) => new Date(str)}
                               placeholder={"MM/DD/YYYY"}
                             />
                           </div>
 
                           <div className="col-span-6">
-                            <FileUploader
-                              multipleFilesAllowed={false}
-                              handleS3Response={handleS3Response}
-                            />
+                            {hasExistingFile ? (
+                              <div className="pl-3 pr-4 py-3 col-span-2 flex items-center justify-between text-sm border border-gray-200 rounded-md">
+                                <div className="w-0 flex-1 flex items-center">
+                                  <PaperClipIcon
+                                    className="flex-shrink-0 h-5 w-5 text-gray-400"
+                                    aria-hidden="true"
+                                  />
+                                  <span className="ml-2 flex-1 w-0 truncate">
+                                    {props.coi.document_name}
+                                  </span>
+                                </div>
+                                <div className="ml-4 flex-shrink-0">
+                                  <span
+                                    onClick={handleDocumentRemove}
+                                    className="font-medium text-red-600 hover:text-red-500 cursor-pointer"
+                                  >
+                                    Remove
+                                  </span>
+                                </div>
+                              </div>
+                            ) : (
+                              <FileUploader
+                                multipleFilesAllowed={false}
+                                handleS3Response={handleS3Response}
+                              />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -229,7 +284,7 @@ const CoiAddEditModal = (props) => {
                         type="button"
                         ref={cancelButtonRef}
                         className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
-                        onClick={props.toggleCoiAddEditModal}
+                        onClick={handleModalClose}
                       >
                         Cancel
                       </button>
