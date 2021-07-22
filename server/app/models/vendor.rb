@@ -15,7 +15,7 @@ class Vendor < ApplicationRecord
 
   def coi_compliant
     if coi_required
-      cois[0].present? and cois[0].policy_effective <= Date.today and cois[0].policy_expires >= Date.today
+      cois[0].present? and cois[0].policy_effective <= Date.today and cois[0].policy_expires >= Date.today and cois[0].document.attached?
     else
       true
     end

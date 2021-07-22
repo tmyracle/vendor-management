@@ -11,8 +11,17 @@ module Api::V1
     end
 
     def update
+      if params[:remove_file].present? && params[:remove_file]
+        @msa.document.attachment.purge
+        @msa.document.purge
+      end
+
       if params[:document].present?
         @msa.document.attach(params[:document]) if !!@msa
+        @msa.update(update_params)
+        render json: @msa.as_json(methods: [:document_url, :document_name]), status: :ok
+      else
+        @msa.update(update_params)
         render json: @msa.as_json(methods: [:document_url, :document_name]), status: :ok
       end
     end
@@ -33,6 +42,10 @@ module Api::V1
 
     def msa_params
       params.permit(:id, :status, :document, :executed_on, :uploaded_by, :vendor_id)
+    end
+
+    def update_params
+      params.permit(:id, :status, :document, :executed_on, :uploaded_by, :vendor_id).select { |k,v| !v.nil? }
     end
   end
 end

@@ -10,7 +10,6 @@ import toast from "react-hot-toast";
 import FileUploader from "./FileUploader";
 import { DateInput } from "@blueprintjs/datetime";
 import { Position } from "@blueprintjs/core";
-import "./datepicker.css";
 
 const schema = yup.object().shape({
   policy_effective: yup.date(),

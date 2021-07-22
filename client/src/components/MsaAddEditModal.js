@@ -1,16 +1,15 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { withToken } from "../lib/authHandler";
-import { DocumentAddIcon } from "@heroicons/react/solid";
+import { DocumentAddIcon, PaperClipIcon } from "@heroicons/react/solid";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import FileUploader from "./FileUploader";
 import { DateInput } from "@blueprintjs/datetime";
 import { Position } from "@blueprintjs/core";
-import "./datepicker.css";
 
 const schema = yup.object().shape({
   status: yup.string().required("Status is a required field"),
@@ -26,18 +25,37 @@ function classNames(...classes) {
 
 const MsaAddEditModal = (props) => {
   const [s3Responses, setS3Responses] = useState(null);
-  const { register, handleSubmit, reset, watch, setValue } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const [hasExistingFile, setHasExistingFile] = useState();
+  const { register, handleSubmit, reset, watch, setValue, getValues } = useForm(
+    {
+      resolver: yupResolver(schema),
+    }
+  );
 
+  const cancelButtonRef = useRef(null);
   const msaStatus = watch("status");
 
   const handleS3Response = (s3Responses) => {
     setS3Responses(s3Responses);
   };
 
+  const setDefaultValue = () => {
+    let initValue = getValues("executedOn");
+    return initValue && initValue.length > 1 ? new Date(initValue) : new Date();
+  };
+
   const handleDateChange = (date) => {
     setValue("executedOn", date);
+  };
+
+  const handleDocumentRemove = async () => {
+    setHasExistingFile(false);
+  };
+
+  const handleModalClose = () => {
+    setHasExistingFile();
+    setS3Responses(null);
+    props.toggleMsaAddEditModal();
   };
 
   const formatDate = (date) => {
@@ -63,8 +81,14 @@ const MsaAddEditModal = (props) => {
     }
   }, [props.msa, props.mode, reset]);
 
+  useEffect(() => {
+    setHasExistingFile(
+      props.msa && props.msa.document_name && props.msa.document_name.length > 0
+    );
+  }, [props.msa]);
+
   const handleMsaSubmit = async (data) => {
-    const payload = {
+    let payload = {
       status: data.status,
       executed_on: data.executedOn,
       vendor_id: props.vendor.id,
@@ -77,7 +101,7 @@ const MsaAddEditModal = (props) => {
         if (res.status === 200) {
           toast.success(`MSA added for ${props.vendor.name}`);
           props.fetchVendor();
-          props.toggleMsaAddEditModal();
+          handleModalClose();
           reset();
         }
       } catch (err) {
@@ -85,6 +109,9 @@ const MsaAddEditModal = (props) => {
       }
     } else if (props.mode === "edit") {
       try {
+        if (hasExistingFile === false && s3Responses === null) {
+          payload.remove_file = true;
+        }
         const res = await axios.patch(
           `/api/v1/msas/${props.msa.id}`,
           payload,
@@ -93,7 +120,7 @@ const MsaAddEditModal = (props) => {
         if (res.status === 200) {
           toast.success(`MSA updated.`);
           props.fetchVendor();
-          props.toggleMsaAddEditModal();
+          handleModalClose();
           reset();
         }
       } catch (err) {
@@ -109,9 +136,9 @@ const MsaAddEditModal = (props) => {
           as="div"
           static={true}
           className="fixed z-10 inset-0 overflow-y-auto"
-          initialFocus={null}
+          initialFocus={cancelButtonRef}
           open={props.isOpen}
-          onClose={props.toggleMsaAddEditModal}
+          onClose={handleModalClose}
         >
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child
@@ -205,15 +232,38 @@ const MsaAddEditModal = (props) => {
                                 }}
                                 parseDate={(str) => new Date(str)}
                                 placeholder={"MM/DD/YYYY"}
+                                defaultValue={setDefaultValue()}
                               />
                             </div>
                           ) : null}
 
                           <div className="col-span-6">
-                            <FileUploader
-                              multipleFilesAllowed={false}
-                              handleS3Response={handleS3Response}
-                            />
+                            {hasExistingFile ? (
+                              <div className="pl-3 pr-4 py-3 col-span-2 flex items-center justify-between text-sm border border-gray-200 rounded-md">
+                                <div className="w-0 flex-1 flex items-center">
+                                  <PaperClipIcon
+                                    className="flex-shrink-0 h-5 w-5 text-gray-400"
+                                    aria-hidden="true"
+                                  />
+                                  <span className="ml-2 flex-1 w-0 truncate">
+                                    {props.msa.document_name}
+                                  </span>
+                                </div>
+                                <div className="ml-4 flex-shrink-0">
+                                  <span
+                                    onClick={handleDocumentRemove}
+                                    className="font-medium text-red-600 hover:text-red-500 hover:underline cursor-pointer"
+                                  >
+                                    Remove
+                                  </span>
+                                </div>
+                              </div>
+                            ) : (
+                              <FileUploader
+                                multipleFilesAllowed={false}
+                                handleS3Response={handleS3Response}
+                              />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -237,8 +287,9 @@ const MsaAddEditModal = (props) => {
 
                       <button
                         type="button"
+                        ref={cancelButtonRef}
                         className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
-                        onClick={props.toggleMsaAddEditModal}
+                        onClick={handleModalClose}
                       >
                         Cancel
                       </button>

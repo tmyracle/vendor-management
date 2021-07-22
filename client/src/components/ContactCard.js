@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import parsePhoneNumber from "libphonenumber-js";
-import { TrashIcon } from "@heroicons/react/outline";
 import { ContactDeleteConfirmation } from "./ContactDeleteConfirmation";
 
 export const ContactCard = (props) => {
@@ -42,40 +41,52 @@ export const ContactCard = (props) => {
     }
   };
 
-  const handleContactClick = () => {
+  const handleModalClose = () => {
+    setOpen(!open);
+  };
+
+  const handleEditClick = () => {
     props.toggleContactEditModal();
   };
 
-  const handleDeleteIconClick = (e) => {
+  const handleRemoveClick = (e) => {
     e.stopPropagation();
     setOpen(!open);
   };
 
   return (
-    <div
-      className="relative group rounded-lg border border-gray-200  bg-white px-6 py-5 shadow-sm hover:shadow-md flex items-center space-x-3 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 cursor-pointer"
-      onClick={handleContactClick}
-    >
-      <TrashIcon
-        className="absolute right-6 z-10 top-5 h-6 w-6 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100"
-        onClick={handleDeleteIconClick}
-      />
+    <div className="relative group rounded-lg border border-gray-200  bg-white px-6 py-5 shadow-sm flex items-center space-x-3">
       <div className="flex-shrink-0">
         <div className="h-12 w-12 flex rounded-full bg-gray-200 text-center justify-center items-center">
           <span>{getInitials(props.contact.name)}</span>
         </div>
       </div>
       <div className="flex-1 pl-4">
-        <span className="absolute inset-0" aria-hidden="true" />
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center justify-between space-x-3">
           <p className="font-medium text-gray-900 sm:col-span-2">
             {props.contact.name}
+            {props.contact.title && props.contact.title.length > 0 ? (
+              <span className="flex-shrink-0 inline-block ml-2 px-2 py-0.5 text-gray-800 text-xs font-medium bg-gray-200 rounded-full">
+                {props.contact.title}
+              </span>
+            ) : null}
           </p>
-          {props.contact.title && props.contact.title.length > 0 ? (
-            <span className="flex-shrink-0 inline-block ml-2 px-2 py-0.5 text-gray-800 text-xs font-medium bg-gray-200 rounded-full">
-              {props.contact.title}
+
+          <div className="ml-4 flex-shrink-0">
+            <span
+              onClick={handleRemoveClick}
+              className="font-medium text-blue-600 hover:text-blue-500 hover:underline cursor-pointer"
+            >
+              Remove
             </span>
-          ) : null}
+            <span className="text-gray-300 mx-2">|</span>
+            <span
+              onClick={handleEditClick}
+              className="font-medium inline text-blue-600 hover:text-blue-500 hover:underline cursor-pointer"
+            >
+              Edit
+            </span>
+          </div>
         </div>
         <div className="flex-1 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
           {fields.map((field) => (
@@ -94,8 +105,9 @@ export const ContactCard = (props) => {
         <ContactDeleteConfirmation
           contact={props.contact}
           open={open}
+          handleModalClose={handleModalClose}
           fetchVendor={props.fetchVendor}
-          toggleAlert={handleDeleteIconClick}
+          toggleAlert={handleRemoveClick}
         />
       ) : null}
     </div>
