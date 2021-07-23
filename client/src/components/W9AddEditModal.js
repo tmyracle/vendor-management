@@ -8,44 +8,22 @@ import { DocumentAddIcon, PaperClipIcon } from "@heroicons/react/solid";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import FileUploader from "./FileUploader";
-import { DateInput } from "@blueprintjs/datetime";
-import { Position } from "@blueprintjs/core";
 
 const schema = yup.object().shape({
-  status: yup.string().required("Status is a required field"),
-  executed_on: yup.date(),
-  vendor_id: yup.number(),
+  taxpayer_id_number: yup.string(),
 });
 
-const INPUT_STYLES = "mt-1 focus:ring-blue-500 focus:border-blue-500";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-const MsaAddEditModal = (props) => {
+const W9AddEditModal = (props) => {
   const [s3Responses, setS3Responses] = useState(null);
   const [hasExistingFile, setHasExistingFile] = useState();
-  const { register, handleSubmit, reset, watch, setValue, getValues } = useForm(
-    {
-      resolver: yupResolver(schema),
-    }
-  );
+  const { register, handleSubmit, reset } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-  const cancelButtonRef = useRef(null);
-  const msaStatus = watch("status");
+  let cancelButtonRef = useRef(null);
 
   const handleS3Response = (s3Responses) => {
     setS3Responses(s3Responses);
-  };
-
-  const setDefaultValue = () => {
-    let initValue = getValues("executedOn");
-    return initValue && initValue.length > 1 ? new Date(initValue) : new Date();
-  };
-
-  const handleDateChange = (date) => {
-    setValue("executedOn", date);
   };
 
   const handleDocumentRemove = async () => {
@@ -53,55 +31,44 @@ const MsaAddEditModal = (props) => {
   };
 
   const handleModalClose = () => {
-    props.toggleMsaAddEditModal();
+    props.toggleW9AddEditModal();
     setHasExistingFile(
-      props.msa && props.msa.document_name && props.msa.document_name.length > 0
+      props.w9 && props.w9.document_name && props.w9.document_name.length > 0
     );
     setS3Responses(null);
   };
 
-  const formatDate = (date) => {
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "2-digit",
-    }).format(date);
-  };
-
   useEffect(() => {
-    if (props.mode === "edit" && props.msa) {
+    if (props.mode === "edit" && props.w9) {
       const defaults = {
-        status: props.msa.status,
-        executedOn: props.msa.executed_on,
+        taxpayerIdNumber: props.w9.taxpayer_id_number,
       };
       reset(defaults);
     } else {
       reset({
-        status: "",
-        executedOn: "",
+        taxpayerIdNumber: "",
       });
     }
-  }, [props.msa, props.mode, reset]);
+  }, [props.w9, props.mode, reset]);
 
   useEffect(() => {
     setHasExistingFile(
-      props.msa && props.msa.document_name && props.msa.document_name.length > 0
+      props.w9 && props.w9.document_name && props.w9.document_name.length > 0
     );
-  }, [props.msa]);
+  }, [props.w9]);
 
-  const handleMsaSubmit = async (data) => {
-    let payload = {
-      status: data.status,
-      executed_on: data.executedOn,
+  const handleW9Submit = async (data) => {
+    const payload = {
+      taxpayer_id_number: data.taxpayerIdNumber,
       vendor_id: props.vendor.id,
       document: s3Responses ? s3Responses[0].blob_signed_id : null,
     };
 
     if (props.mode === "add") {
       try {
-        const res = await axios.post("/api/v1/msas", payload, withToken());
+        const res = await axios.post("/api/v1/w9s", payload, withToken());
         if (res.status === 200) {
-          toast.success(`MSA added for ${props.vendor.name}`);
+          toast.success(`W9 added for ${props.vendor.name}`);
           props.fetchVendor();
           handleModalClose();
           reset();
@@ -115,12 +82,12 @@ const MsaAddEditModal = (props) => {
           payload.remove_file = true;
         }
         const res = await axios.patch(
-          `/api/v1/msas/${props.msa.id}`,
+          `/api/v1/w9s/${props.w9.id}`,
           payload,
           withToken()
         );
         if (res.status === 200) {
-          toast.success(`MSA updated.`);
+          toast.success(`W9 updated`);
           props.fetchVendor();
           handleModalClose();
           reset();
@@ -136,7 +103,7 @@ const MsaAddEditModal = (props) => {
       <Transition.Root show={props.isOpen} as={Fragment}>
         <Dialog
           as="div"
-          static={true}
+          static
           className="fixed z-10 inset-0 overflow-y-auto"
           initialFocus={cancelButtonRef}
           open={props.isOpen}
@@ -172,7 +139,7 @@ const MsaAddEditModal = (props) => {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <div className="inline-block align-bottom overflow-visible bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                <form onSubmit={handleSubmit(handleMsaSubmit)}>
+                <form onSubmit={handleSubmit(handleW9Submit)}>
                   <div>
                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
                       <DocumentAddIcon
@@ -185,59 +152,29 @@ const MsaAddEditModal = (props) => {
                         as="h3"
                         className="text-lg leading-6 font-medium text-gray-900 text-center"
                       >
-                        {props.mode === "add" ? "Add" : "Edit"} MSA for{" "}
+                        {props.mode === "add" ? "Add" : "Edit"} W9 for{" "}
                         {props.vendor.name}
                       </Dialog.Title>
                       <div className="space-y-3 mt-4">
                         <div className="grid grid-cols-6 gap-3">
-                          <div
-                            className={classNames(
-                              msaStatus === "executed"
-                                ? "col-span-6 sm:col-span-3"
-                                : "sm:col-span-6"
-                            )}
-                          >
+                          <div className="col-span-6 sm:col-span-6">
                             <label
-                              htmlFor="status"
+                              htmlFor="taxpayerIdNumber"
                               className="block text-sm font-medium text-gray-700"
                             >
-                              Status
+                              Taxpayer ID number
                             </label>
-                            <select
-                              id="location"
-                              {...register("status", { required: true })}
-                              defaultValue=""
-                              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                            >
-                              <option value="pending">Pending</option>
-                              <option value="negotiating">Negotiating</option>
-                              <option value="executed">Executed</option>
-                            </select>
-                          </div>
-                          {msaStatus === "executed" ? (
-                            <div className="col-span-6 sm:col-span-3">
-                              <label
-                                htmlFor="title"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                Executed on
-                              </label>
-
-                              <DateInput
-                                {...register("executedOn")}
-                                inputProps={{ className: INPUT_STYLES }}
-                                formatDate={(date) => formatDate(date)}
-                                onChange={handleDateChange}
-                                popoverProps={{
-                                  position: Position.BOTTOM,
-                                  usePortal: false,
-                                }}
-                                parseDate={(str) => new Date(str)}
-                                placeholder={"MM/DD/YYYY"}
-                                defaultValue={setDefaultValue()}
+                            <div className="mt-1">
+                              <input
+                                type="text"
+                                {...register("taxpayerIdNumber", {
+                                  required: true,
+                                })}
+                                autoComplete="off"
+                                className="appearance-none inline w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                               />
                             </div>
-                          ) : null}
+                          </div>
 
                           <div className="col-span-6">
                             {hasExistingFile ? (
@@ -248,7 +185,7 @@ const MsaAddEditModal = (props) => {
                                     aria-hidden="true"
                                   />
                                   <span className="ml-2 flex-1 w-0 truncate">
-                                    {props.msa.document_name}
+                                    {props.w9.document_name}
                                   </span>
                                 </div>
                                 <div className="ml-4 flex-shrink-0">
@@ -307,4 +244,4 @@ const MsaAddEditModal = (props) => {
   );
 };
 
-export default MsaAddEditModal;
+export default W9AddEditModal;

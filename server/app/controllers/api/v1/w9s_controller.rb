@@ -11,8 +11,17 @@ module Api::V1
     end
 
     def update
+      if params[:remove_file].present? && params[:remove_file]
+        @w9.document.attachment.purge
+        @w9.document.purge
+      end
+
       if params[:document].present?
         @w9.document.attach(params[:document]) if !!@w9
+        @w9.update(update_params)
+        render json: @w9.as_json(methods: [:document_url, :document_name]), status: :ok
+      else
+        @w9.update(update_params)
         render json: @w9.as_json(methods: [:document_url, :document_name]), status: :ok
       end
     end
@@ -32,8 +41,12 @@ module Api::V1
     end
 
     def w9_params
-      params.permit(:id, :policy_effective, :policy_expires, :document, :uploaded_by, :vendor_id)
+      params.permit(:id, :taxpayer_id_number, :executed_on, :document, :uploaded_by, :vendor_id)
     end
-  end
+
+    def update_params
+      params.permit(:id, :taxpayer_id_number, :executed_on, :document, :uploaded_by, :vendor_id).select { |k,v| !v.nil? }
+    end
+
   end
 end

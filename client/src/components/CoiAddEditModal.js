@@ -17,7 +17,7 @@ const schema = yup.object().shape({
   vendor_id: yup.number(),
 });
 
-const INPUT_STYLES = "mt-1 focus:ring-indigo-500 focus:border-indigo-500";
+const INPUT_STYLES = "mt-1 focus:ring-blue-500 focus:border-blue-500";
 
 const CoiAddEditModal = (props) => {
   const [s3Responses, setS3Responses] = useState(null);
@@ -48,7 +48,9 @@ const CoiAddEditModal = (props) => {
 
   const handleModalClose = () => {
     props.toggleCoiAddEditModal();
-    setHasExistingFile();
+    setHasExistingFile(
+      props.coi && props.coi.document_name && props.coi.document_name.length > 0
+    );
     setS3Responses(null);
   };
 

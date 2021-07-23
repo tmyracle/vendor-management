@@ -6,30 +6,44 @@ import {
   PencilAltIcon,
   UserAddIcon,
 } from "@heroicons/react/solid";
-import { UserIcon } from "@heroicons/react/outline";
 import OverviewSection from "./vendor/OverviewSection";
 import MsaSection from "./vendor/MsaSection";
 import CoiSection from "./vendor/CoiSection";
+import W9Section from "./vendor/W9Section";
 import ContactSection from "./vendor/ContactsSection";
 import MsaAddEditModal from "./MsaAddEditModal";
 import CoiAddEditModal from "./CoiAddEditModal";
+import W9AddEditModal from "./W9AddEditModal";
 import ContactAddEditModal from "./ContactAddEditModal";
 
-const coverImageUrl =
-  "https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80";
+const coverImageUrls = [
+  "https://images.unsplash.com/photo-1527515234283-d93c5f8486a0?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2242&q=80",
+  "https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80",
+  "https://images.unsplash.com/photo-1508233620467-f79f1e317a05?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1868&q=80",
+  "https://images.unsplash.com/photo-1508031100502-f2f679ea78eb?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
+  "https://images.unsplash.com/photo-1507963901243-ebfaecd5f2f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2158&q=80",
+  "https://images.unsplash.com/photo-1517256985756-924657c74fba?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
+  "https://images.unsplash.com/photo-1464013778555-8e723c2f01f8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80",
+  "https://images.unsplash.com/photo-1517829695495-7363a9eb3539?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
+  "https://images.unsplash.com/photo-1594878462522-f6e3db86d0ec?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1867&q=80",
+  "https://images.unsplash.com/photo-1555600341-3ab8d338991d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=933&q=80",
+];
 
 const VendorDetail = (props) => {
   const [vendor, setVendor] = useState(props.vendor);
   const [contactModalMode, setContactModalMode] = useState(null);
   const [msaModalMode, setMsaModalMode] = useState(null);
   const [coiModalMode, setCoiModalMode] = useState(null);
+  const [w9ModalMode, setW9ModalMode] = useState(null);
   const [contact, setContact] = useState(null);
   const [msa, setMsa] = useState(null);
   const [coi, setCoi] = useState(null);
+  const [w9, setW9] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [contactAddEditModalOpen, setContactAddEditModalOpen] = useState(false);
   const [msaAddEditModalOpen, setMsaAddEditModalOpen] = useState(false);
   const [coiAddEditModalOpen, setCoiAddEditModalOpen] = useState(false);
+  const [w9AddEditModalOpen, setW9AddEditModalOpen] = useState(false);
 
   const toggleContactAddEditModal = () => {
     setContactAddEditModalOpen(!contactAddEditModalOpen);
@@ -74,6 +88,21 @@ const VendorDetail = (props) => {
     setCoiModalMode("edit");
     setCoi(msa);
     toggleCoiAddEditModal();
+  };
+
+  const toggleW9AddEditModal = () => {
+    setW9AddEditModalOpen(!w9AddEditModalOpen);
+  };
+
+  const toggleW9AddModal = () => {
+    setW9ModalMode("add");
+    toggleW9AddEditModal();
+  };
+
+  const toggleW9EditModal = (w9) => {
+    setW9ModalMode("edit");
+    setW9(w9);
+    toggleW9AddEditModal();
   };
 
   const handleVendorUpdate = (vendor) => {
@@ -124,17 +153,18 @@ const VendorDetail = (props) => {
         </a>
       </nav>
       {vendor ? (
-        <div className="mb-4">
+        <div className="mb-20">
           <article>
             {/* Profile header */}
             <div>
               <div>
                 <img
                   className="h-32 w-full object-cover lg:h-48"
-                  src={coverImageUrl}
+                  src={coverImageUrls[vendor.id % 10]}
                   alt=""
                 />
               </div>
+
               <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="sm:flex sm:items-end sm:space-x-5">
                   {/*
@@ -204,6 +234,14 @@ const VendorDetail = (props) => {
               toggleCoiEditModal={toggleCoiEditModal}
             />
 
+            {/* MSA section */}
+            <W9Section
+              vendor={vendor}
+              updateVendor={handleVendorUpdate}
+              toggleW9AddModal={toggleW9AddModal}
+              toggleW9EditModal={toggleW9EditModal}
+            />
+
             {/* Contacts section */}
             <ContactSection
               vendor={vendor}
@@ -243,6 +281,16 @@ const VendorDetail = (props) => {
         mode={coiModalMode}
         coi={coi}
         toggleCoiAddEditModal={toggleCoiAddEditModal}
+        vendor={vendor}
+        fetchVendor={() => {
+          fetchVendor(true);
+        }}
+      />
+      <W9AddEditModal
+        isOpen={w9AddEditModalOpen}
+        mode={w9ModalMode}
+        w9={w9}
+        toggleW9AddEditModal={toggleW9AddEditModal}
         vendor={vendor}
         fetchVendor={() => {
           fetchVendor(true);
