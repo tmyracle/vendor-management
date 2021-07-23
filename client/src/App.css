@@ -17,3 +17,7 @@
 a:hover {
   text-decoration: none !important;
 }
+
+.logo-name {
+  font-family: 'Ubuntu', sans-serif;
+}

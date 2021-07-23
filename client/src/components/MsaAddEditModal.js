@@ -53,7 +53,9 @@ const MsaAddEditModal = (props) => {
   };
 
   const handleModalClose = () => {
-    setHasExistingFile();
+    setHasExistingFile(
+      props.msa && props.msa.document_name && props.msa.document_name.length > 0
+    );
     setS3Responses(null);
     props.toggleMsaAddEditModal();
   };
