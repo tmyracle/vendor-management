@@ -19,6 +19,7 @@ gem 'jwt'
 gem 'sendgrid-ruby'
 gem 'email_validator'
 gem 'aws-sdk-s3'
+gem 'active_model_serializers'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'

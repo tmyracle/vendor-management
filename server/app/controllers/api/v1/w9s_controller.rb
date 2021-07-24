@@ -7,7 +7,7 @@ module Api::V1
       document = params[:document]
       w9 = W9.create!(w9_params.merge(uploaded_by: @user.id))
       w9.document.attach(document) if document.present? && !!w9
-      render json: w9.as_json(methods: [:document_url, :document_name]), status: :ok
+      render json: w9, status: :ok
     end
 
     def update
@@ -19,16 +19,16 @@ module Api::V1
       if params[:document].present?
         @w9.document.attach(params[:document]) if !!@w9
         @w9.update(update_params)
-        render json: @w9.as_json(methods: [:document_url, :document_name]), status: :ok
+        render json: @w9, status: :ok
       else
         @w9.update(update_params)
-        render json: @w9.as_json(methods: [:document_url, :document_name]), status: :ok
+        render json: @w9, status: :ok
       end
     end
 
     def show
       if params[:id].present?
-        render json: @w9.as_json(methods: [:document_url, :document_name]), status: :ok
+        render json: @w9, status: :ok
       else
         render json: {message: "Error rendering W9"}, status: :internal_server_error
       end

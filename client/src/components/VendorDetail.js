@@ -12,7 +12,6 @@ import CoiSection from "./vendor/CoiSection";
 import W9Section from "./vendor/W9Section";
 import ContactSection from "./vendor/ContactsSection";
 import MsaAddEditModal from "./MsaAddEditModal";
-import CoiAddEditModal from "./CoiAddEditModal";
 import W9AddEditModal from "./W9AddEditModal";
 import ContactAddEditModal from "./ContactAddEditModal";
 
@@ -33,16 +32,13 @@ const VendorDetail = (props) => {
   const [vendor, setVendor] = useState(props.vendor);
   const [contactModalMode, setContactModalMode] = useState(null);
   const [msaModalMode, setMsaModalMode] = useState(null);
-  const [coiModalMode, setCoiModalMode] = useState(null);
   const [w9ModalMode, setW9ModalMode] = useState(null);
   const [contact, setContact] = useState(null);
   const [msa, setMsa] = useState(null);
-  const [coi, setCoi] = useState(null);
   const [w9, setW9] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [contactAddEditModalOpen, setContactAddEditModalOpen] = useState(false);
   const [msaAddEditModalOpen, setMsaAddEditModalOpen] = useState(false);
-  const [coiAddEditModalOpen, setCoiAddEditModalOpen] = useState(false);
   const [w9AddEditModalOpen, setW9AddEditModalOpen] = useState(false);
 
   const toggleContactAddEditModal = () => {
@@ -73,21 +69,6 @@ const VendorDetail = (props) => {
     setMsaModalMode("edit");
     setMsa(msa);
     toggleMsaAddEditModal();
-  };
-
-  const toggleCoiAddEditModal = () => {
-    setCoiAddEditModalOpen(!coiAddEditModalOpen);
-  };
-
-  const toggleCoiAddModal = () => {
-    setCoiModalMode("add");
-    toggleCoiAddEditModal();
-  };
-
-  const toggleCoiEditModal = (msa) => {
-    setCoiModalMode("edit");
-    setCoi(msa);
-    toggleCoiAddEditModal();
   };
 
   const toggleW9AddEditModal = () => {
@@ -165,7 +146,7 @@ const VendorDetail = (props) => {
                 />
               </div>
 
-              <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="sm:flex sm:items-end sm:space-x-5">
                   {/*
                   <div className="flex">
@@ -229,12 +210,11 @@ const VendorDetail = (props) => {
             {/* COI section */}
             <CoiSection
               vendor={vendor}
+              fetchVendor={() => {fetchVendor(true)}}
               updateVendor={handleVendorUpdate}
-              toggleCoiAddModal={toggleCoiAddModal}
-              toggleCoiEditModal={toggleCoiEditModal}
             />
 
-            {/* MSA section */}
+            {/* W9 section */}
             <W9Section
               vendor={vendor}
               updateVendor={handleVendorUpdate}
@@ -271,16 +251,6 @@ const VendorDetail = (props) => {
         mode={msaModalMode}
         msa={msa}
         toggleMsaAddEditModal={toggleMsaAddEditModal}
-        vendor={vendor}
-        fetchVendor={() => {
-          fetchVendor(true);
-        }}
-      />
-      <CoiAddEditModal
-        isOpen={coiAddEditModalOpen}
-        mode={coiModalMode}
-        coi={coi}
-        toggleCoiAddEditModal={toggleCoiAddEditModal}
         vendor={vendor}
         fetchVendor={() => {
           fetchVendor(true);

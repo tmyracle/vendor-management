@@ -7,7 +7,7 @@ module Api::V1
       document = params[:document]
       msa = Msa.create!(msa_params.merge(uploaded_by: @user.id))
       msa.document.attach(document) if document.present? && !!msa
-      render json: msa.as_json(methods: [:document_url, :document_name]), status: :ok
+      render json: msa, status: :ok
     end
 
     def update
@@ -19,16 +19,16 @@ module Api::V1
       if params[:document].present?
         @msa.document.attach(params[:document]) if !!@msa
         @msa.update(update_params)
-        render json: @msa.as_json(methods: [:document_url, :document_name]), status: :ok
+        render json: @msa, status: :ok
       else
         @msa.update(update_params)
-        render json: @msa.as_json(methods: [:document_url, :document_name]), status: :ok
+        render json: @msa, status: :ok
       end
     end
 
     def show
       if params[:id].present?
-        render json: @msa.as_json(methods: [:document_url, :document_name]), status: :ok
+        render json: @msa, status: :ok
       else
         render json: {message: "Error rendering MSA"}, status: :internal_server_error
       end

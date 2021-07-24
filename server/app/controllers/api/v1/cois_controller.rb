@@ -7,7 +7,7 @@ module Api::V1
       document = params[:document]
       coi = Coi.create!(coi_params.merge(uploaded_by: @user.id))
       coi.document.attach(document) if document.present? && !!coi
-      render json: coi.as_json(methods: [:document_url, :document_name]), status: :ok
+      render json: coi, status: :ok
     end
 
     def update
@@ -19,18 +19,27 @@ module Api::V1
       if params[:document].present?
         @coi.document.attach(params[:document]) if !!@coi
         @coi.update(update_params)
-        render json: @coi.as_json(methods: [:document_url, :document_name]), status: :ok
+        render json: @coi, status: :ok
       else
         @coi.update(update_params)
-        render json: @coi.as_json(methods: [:document_url, :document_name]), status: :ok
+        render json: @coi, status: :ok
       end
     end
 
     def show
       if params[:id].present?
-        render json: @coi.as_json(methods: [:document_url, :document_name]), status: :ok
+        render json: @coi, status: :ok
       else
         render json: {message: "Error rendering COI"}, status: :internal_server_error
+      end
+    end
+
+    def destroy
+      if params[:id].present?
+        @coi.destroy
+        render status: :ok
+      else
+        render json: {message: "There was a problem deleting the COI"}, status: :internal_server_error
       end
     end
 

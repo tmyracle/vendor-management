@@ -1,3 +1,4 @@
+import {useState} from "react";
 import axios from "axios";
 import { Switch } from "@headlessui/react";
 import {
@@ -8,12 +9,33 @@ import {
 } from "@heroicons/react/solid";
 import toast from "react-hot-toast";
 import { withToken } from "../../lib/authHandler";
+import CoiAddEditModal from "../CoiAddEditModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const CoiSection = (props) => {
+  const [coiAddEditModalOpen, setCoiAddEditModalOpen] = useState(false);
+  const [coiModalMode, setCoiModalMode] = useState(null);
+  const [coi, setCoi] = useState(null);
+
+  const toggleCoiAddEditModal = () => {
+    setCoiAddEditModalOpen(!coiAddEditModalOpen);
+  };
+
+  const toggleCoiAddModal = () => {
+    setCoiModalMode("add");
+    setCoi({})
+    toggleCoiAddEditModal();
+  };
+
+  const toggleCoiEditModal = (coi) => {
+    setCoiModalMode("edit");
+    setCoi(coi);
+    toggleCoiAddEditModal();
+  };
+
   const formatDate = (date) => {
     return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
@@ -23,7 +45,7 @@ const CoiSection = (props) => {
   };
 
   const handleEditClick = () => {
-    props.toggleCoiEditModal(props.vendor.cois[0]);
+    toggleCoiEditModal(props.vendor.cois[0]);
   };
 
   const handleVendorUpdate = async () => {
@@ -166,7 +188,7 @@ const CoiSection = (props) => {
                 <div className="mt-6">
                   <button
                     type="button"
-                    onClick={props.toggleCoiAddModal}
+                    onClick={toggleCoiAddModal}
                     className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     <DocumentAddIcon
@@ -181,6 +203,16 @@ const CoiSection = (props) => {
           </div>
         ) : null}
       </div>
+      <CoiAddEditModal
+        isOpen={coiAddEditModalOpen}
+        mode={coiModalMode}
+        coi={coi}
+        toggleCoiAddEditModal={toggleCoiAddEditModal}
+        vendor={props.vendor}
+        fetchVendor={() => {
+          props.fetchVendor(true);
+        }}
+      />
     </section>
   );
 };

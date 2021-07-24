@@ -5,6 +5,7 @@ import StripedTable from "../../components/StripedTable";
 import { MailIcon } from "@heroicons/react/solid";
 import { Dialog, Transition } from "@headlessui/react";
 import { PaperAirplaneIcon } from "@heroicons/react/outline";
+import toast from "react-hot-toast";
 
 const Team = (props) => {
   const [company, setCompany] = useState(props.user.companies[0]);
@@ -42,7 +43,7 @@ const Team = (props) => {
         setCompany(res.data.company);
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Error fetching team members")
     }
   }, []);
 

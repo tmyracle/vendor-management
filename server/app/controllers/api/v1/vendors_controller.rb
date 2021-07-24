@@ -5,11 +5,7 @@ module Api::V1
     def create
       if params[:name].present?
         vendor = Vendor.create!(name: params[:name], description: params[:description], website: params[:website], company_id: @user.companies[0].id)
-        render json: vendor.as_json(include: [:contacts, 
-          {msas: {methods: [:document_url, :document_name, :uploader]}},
-          {cois: {methods: [:document_url, :document_name, :uploader]}},
-          {w9s: {methods: [:document_url, :document_name, :uploader]}}
-          ], methods: [:msa_compliant, :coi_compliant, :w9_compliant]), status: :ok
+        render json: vendor, status: :ok
       else
         render json: {message: "Problem adding new vendor. Make sure you provided a name."}, status: :internal_server_error
       end
@@ -19,11 +15,7 @@ module Api::V1
       if params[:id].present?
         vendor = Vendor.find(params[:id])
         vendor.update(update_params)
-        render json: vendor.as_json(include: [:contacts, 
-          {msas: {methods: [:document_url, :document_name, :uploader]}},
-          {cois: {methods: [:document_url, :document_name, :uploader]}},
-          {w9s: {methods: [:document_url, :document_name, :uploader]}}
-          ], methods: [:msa_compliant, :coi_compliant, :w9_compliant]), status: :ok
+        render json: vendor, status: :ok
       else
         render json: {message: "Something went wrong updating the vendor"}, status: :internal_server_error
       end
@@ -32,11 +24,7 @@ module Api::V1
     def show
       if params[:id].present?
         vendor = Vendor.find(params[:id])
-        render json: vendor.as_json(include: [:contacts, 
-          {msas: {methods: [:document_url, :document_name, :uploader]}},
-          {cois: {methods: [:document_url, :document_name, :uploader]}},
-          {w9s: {methods: [:document_url, :document_name, :uploader]}},
-          ], methods: [:msa_compliant, :coi_compliant, :w9_compliant]), status: :ok
+        render json: vendor, status: :ok
       else
         render json: {message: "No vendor id provided."}, status: :internal_server_error
       end
