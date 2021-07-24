@@ -28,4 +28,8 @@ class Vendor < ApplicationRecord
       true
     end
   end
+
+  def compliant
+    msa_compliant and coi_compliant and w9_compliant
+  end
 end

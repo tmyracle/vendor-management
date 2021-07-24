@@ -25,6 +25,7 @@ import Projects from "./pages/authenticated/Projects";
 import FileUploadTest from "./pages/authenticated/FileUploadTest";
 import Vendors from "./pages/authenticated/Vendors";
 import { withToken } from "./lib/authHandler";
+import toast from "react-hot-toast";
 
 const navigation = [
   { name: "Dashboard", icon: HomeIcon, href: "/dashboard", current: true },
@@ -72,7 +73,7 @@ export default function AuthenticatedApp() {
           setUser(res.data.user);
         }
       } catch (error) {
-        console.log(error);
+        toast.error("Something went wrong.")
       }
     };
     fetchUser();

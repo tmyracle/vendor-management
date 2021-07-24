@@ -5,6 +5,7 @@ import VendorDetail from "../../components/VendorDetail";
 import VendorList from "../../components/VendorList";
 import VendorAddModal from "../../components/VendorAddModal";
 import VendorEdit from "../../components/VendorEdit";
+import toast from "react-hot-toast";
 
 const Vendors = () => {
   const [vendors, setVendors] = useState();
@@ -31,7 +32,7 @@ const Vendors = () => {
         setVendors(res.data);
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Error fetching vendor list")
     }
   }, []);
 

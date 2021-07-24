@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { withToken } from "../lib/authHandler";
 import axios from "axios";
 import { SearchIcon, PlusCircleIcon } from "@heroicons/react/solid";
+import toast from "react-hot-toast"
 
 const VendorList = (props) => {
   const [vendors, setVendors] = useState(props.vendors);
@@ -31,7 +32,7 @@ const VendorList = (props) => {
           setVendors(res.data);
         }
       } catch (error) {
-        console.log(error);
+        toast.error("Something went wrong fetching vendor list.")
       }
     };
     queryVendors();
