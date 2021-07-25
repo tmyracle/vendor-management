@@ -1,6 +1,7 @@
 import CryptoJS from "crypto-js";
 import axios from "axios";
 import { withToken } from "./authHandler";
+import toast from "react-hot-toast";
 
 const md5FromFile = (file) => {
   return new Promise((resolve, reject) => {
@@ -40,7 +41,7 @@ const createPresignedUrl = async (file, byte_size, checksum) => {
     if (!!contentTypes[extension]) {
       return contentTypes[extension];
     } else {
-      console.log("File type not supported");
+      toast.error("File type not supported");
     }
   };
 
@@ -59,7 +60,7 @@ const createPresignedUrl = async (file, byte_size, checksum) => {
       return res;
     }
   } catch (err) {
-    console.log("Error posting to get presigned url");
+    toast.error("Error uploading file");
   }
 };
 
@@ -79,10 +80,10 @@ const uploadToS3 = async (file) => {
     if (awsRes.status === 200) {
       return presignedFileParams.data;
     } else {
-      console.log("Something went wrong with AWS");
+      toast.error("Something went wrong uploading file");
     }
   } catch (err) {
-    console.log("Error with the AWS");
+    toast.error("Error uploading the file");
     return err;
   }
 };

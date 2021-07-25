@@ -89,7 +89,7 @@ const VendorEdit = (props) => {
         <div className="absolute inset-0 overflow-hidden">
           <Dialog.Overlay className="absolute inset-0" />
 
-          <div className="fixed top-16 bottom-0 right-0 pl-10 max-w-full flex sm:pl-16">
+          <div className="fixed top-0 bottom-0 right-0 pl-10 max-w-full flex sm:pl-16">
             <Transition.Child
               as={Fragment}
               enter="transform transition ease-in-out duration-500 sm:duration-700"

@@ -1,8 +1,9 @@
-import React from "react";
-import { Link, withRouter } from "react-router-dom";
+import { LogoutIcon } from '@heroicons/react/outline'
+import React from 'react'
+import { Link, withRouter } from 'react-router-dom'
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ')
 }
 
 const Navigation = withRouter((props) => {
@@ -29,17 +30,17 @@ const Navigation = withRouter((props) => {
               to={item.href}
               className={classNames(
                 item.href === props.location.pathname
-                  ? "bg-gray-900 text-white hover:text-white"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                  ? 'bg-gray-900 text-white hover:text-white'
+                  : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                'group flex items-center px-2 py-2 text-sm font-medium rounded-md',
               )}
             >
               <item.icon
                 className={classNames(
                   item.href === props.location.pathname
-                    ? "text-gray-300"
-                    : "text-gray-400 group-hover:text-gray-300",
-                  "mr-3 flex-shrink-0 h-6 w-6"
+                    ? 'text-gray-300'
+                    : 'text-gray-400 group-hover:text-gray-300',
+                  'mr-3 flex-shrink-0 h-6 w-6',
                 )}
                 aria-hidden="true"
               />
@@ -48,9 +49,9 @@ const Navigation = withRouter((props) => {
                 <span
                   className={classNames(
                     item.href === props.location.pathname
-                      ? "bg-gray-800"
-                      : "bg-gray-900 group-hover:bg-gray-800",
-                    "ml-3 inline-block py-0.5 px-3 text-xs font-medium rounded-full"
+                      ? 'bg-gray-800'
+                      : 'bg-gray-900 group-hover:bg-gray-800',
+                    'ml-3 inline-block py-0.5 px-3 text-xs font-medium rounded-full',
                   )}
                 >
                   {item.count}
@@ -59,6 +60,18 @@ const Navigation = withRouter((props) => {
             </Link>
           ))}
         </nav>
+      </div>
+      <div>
+        <div
+          onClick={props.handleLogout}
+          className="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-4 py-4 text-sm font-medium cursor-pointer"
+        >
+          <LogoutIcon
+            className="text-gray-400 group-hover:text-gray-300 mr-3 flex-shrink-0 h-6 w-6"
+            aria-hidden="true"
+          />
+          <span className="flex-1">Log out</span>
+        </div>
       </div>
       <div className="flex-shrink-0 flex bg-gray-700 p-4">
         <Link to="/profile" className="flex-shrink-0 w-full group block">
@@ -82,7 +95,7 @@ const Navigation = withRouter((props) => {
         </Link>
       </div>
     </div>
-  );
-});
+  )
+})
 
-export default Navigation;
+export default Navigation

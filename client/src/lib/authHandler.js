@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import toast from "react-hot-toast"
 
 export const AuthContext = React.createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -20,7 +19,6 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         setIsAuthenticated(false);
-        toast.error("Something went wrong.")
       }
     };
     initAuth();
