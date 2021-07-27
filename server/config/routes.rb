@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       post "/invite/accept", to: "invitations#accept"
       post "/presigned_url", to: "direct_upload#create"
       get "/vendor_list", to: "vendors#vendor_list"
+      get "/dashboard", to: "dashboard#show"
     end
   end
 
