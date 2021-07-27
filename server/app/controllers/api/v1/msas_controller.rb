@@ -34,6 +34,15 @@ module Api::V1
       end
     end
 
+    def destroy
+      if params[:id].present?
+        @msa.destroy
+        render status: :ok
+      else
+        render json: {message: "There was a problem deleting the MSA"}, status: :internal_server_error
+      end
+    end
+
     private 
 
     def set_msa

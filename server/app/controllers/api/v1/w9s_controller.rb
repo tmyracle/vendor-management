@@ -34,6 +34,15 @@ module Api::V1
       end
     end
 
+    def destroy
+      if params[:id].present?
+        @w9.destroy
+        render status: :ok
+      else
+        render json: {message: "There was a problem deleting the W9"}, status: :internal_server_error
+      end
+    end
+
     private 
 
     def set_w9
