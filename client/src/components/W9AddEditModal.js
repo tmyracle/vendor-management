@@ -1,117 +1,117 @@
-import React, { useState, Fragment, useEffect, useRef } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import axios from "axios";
-import { withToken } from "../lib/authHandler";
-import { DocumentAddIcon, PaperClipIcon } from "@heroicons/react/solid";
-import * as yup from "yup";
-import toast from "react-hot-toast";
-import FileUploader from "./FileUploader";
+import React, { useState, Fragment, useEffect, useRef } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import axios from 'axios'
+import { withToken } from '../lib/authHandler'
+import { DocumentAddIcon, PaperClipIcon } from '@heroicons/react/solid'
+import * as yup from 'yup'
+import toast from 'react-hot-toast'
+import FileUploader from './FileUploader'
 
 const schema = yup.object().shape({
   taxpayer_id_number: yup.string(),
-});
+})
 
 const W9AddEditModal = (props) => {
-  const [s3Responses, setS3Responses] = useState(null);
-  const [hasExistingFile, setHasExistingFile] = useState();
+  const [s3Responses, setS3Responses] = useState(null)
+  const [hasExistingFile, setHasExistingFile] = useState()
   const { register, handleSubmit, reset } = useForm({
     resolver: yupResolver(schema),
-  });
+  })
 
-  let cancelButtonRef = useRef(null);
+  let cancelButtonRef = useRef(null)
 
   const handleS3Response = (s3Responses) => {
-    setS3Responses(s3Responses);
-  };
+    setS3Responses(s3Responses)
+  }
 
   const handleDocumentRemove = async () => {
-    setHasExistingFile(false);
-  };
+    setHasExistingFile(false)
+  }
 
   const handleW9Delete = async () => {
     try {
-      const res = await axios.delete(`/api/v1/w9s/${props.w9.id}`, withToken());
+      const res = await axios.delete(`/api/v1/w9s/${props.w9.id}`, withToken())
       if (res.status === 200) {
-        toast.success(`W9 removed`);
-        reset();
-        props.fetchVendor();
-        setHasExistingFile(false);
-        handleModalClose();
+        toast.success(`W9 removed`)
+        reset()
+        props.fetchVendor()
+        setHasExistingFile(false)
+        handleModalClose()
       }
     } catch (err) {
-      toast.error("Problem removing W9");
+      toast.error('Problem removing W9')
     }
-  };
+  }
 
   const handleModalClose = () => {
-    props.toggleW9AddEditModal();
+    props.toggleW9AddEditModal()
     setHasExistingFile(
-      props.w9 && props.w9.document_name && props.w9.document_name.length > 0
-    );
-    setS3Responses(null);
-  };
+      props.w9 && props.w9.document_name && props.w9.document_name.length > 0,
+    )
+    setS3Responses(null)
+  }
 
   useEffect(() => {
-    if (props.mode === "edit" && props.w9) {
+    if (props.mode === 'edit' && props.w9) {
       const defaults = {
         taxpayerIdNumber: props.w9.taxpayer_id_number,
-      };
-      reset(defaults);
+      }
+      reset(defaults)
     } else {
       reset({
-        taxpayerIdNumber: "",
-      });
+        taxpayerIdNumber: '',
+      })
     }
-  }, [props.w9, props.mode, reset]);
+  }, [props.w9, props.mode, reset])
 
   useEffect(() => {
     setHasExistingFile(
-      props.w9 && props.w9.document_name && props.w9.document_name.length > 0
-    );
-  }, [props.w9]);
+      props.w9 && props.w9.document_name && props.w9.document_name.length > 0,
+    )
+  }, [props.w9])
 
   const handleW9Submit = async (data) => {
     const payload = {
       taxpayer_id_number: data.taxpayerIdNumber,
       vendor_id: props.vendor.id,
       document: s3Responses ? s3Responses[0].blob_signed_id : null,
-    };
+    }
 
-    if (props.mode === "add") {
+    if (props.mode === 'add') {
       try {
-        const res = await axios.post("/api/v1/w9s", payload, withToken());
+        const res = await axios.post('/api/v1/w9s', payload, withToken())
         if (res.status === 200) {
-          toast.success(`W9 added for ${props.vendor.name}`);
-          props.fetchVendor();
-          handleModalClose();
-          reset();
+          toast.success(`W9 added for ${props.vendor.name}`)
+          props.fetchVendor()
+          handleModalClose()
+          reset()
         }
       } catch (err) {
-        toast.error(err.response.data.message);
+        toast.error(err.response.data.message)
       }
-    } else if (props.mode === "edit") {
+    } else if (props.mode === 'edit') {
       try {
         if (hasExistingFile === false && s3Responses === null) {
-          payload.remove_file = true;
+          payload.remove_file = true
         }
         const res = await axios.patch(
           `/api/v1/w9s/${props.w9.id}`,
           payload,
-          withToken()
-        );
+          withToken(),
+        )
         if (res.status === 200) {
-          toast.success(`W9 updated`);
-          props.fetchVendor();
-          handleModalClose();
-          reset();
+          toast.success(`W9 updated`)
+          props.fetchVendor()
+          handleModalClose()
+          reset()
         }
       } catch (err) {
-        toast.error(err.response.data.message);
+        toast.error(err.response.data.message)
       }
     }
-  };
+  }
 
   return (
     <div>
@@ -167,7 +167,7 @@ const W9AddEditModal = (props) => {
                         as="h3"
                         className="text-lg leading-6 font-medium text-gray-900 text-center"
                       >
-                        {props.mode === "add" ? "Add" : "Edit"} W9 for{" "}
+                        {props.mode === 'add' ? 'Add' : 'Edit'} W9 for{' '}
                         {props.vendor.name}
                       </Dialog.Title>
                       <div className="space-y-3 mt-4">
@@ -182,7 +182,7 @@ const W9AddEditModal = (props) => {
                             <div className="mt-1">
                               <input
                                 type="text"
-                                {...register("taxpayerIdNumber", {
+                                {...register('taxpayerIdNumber', {
                                   required: true,
                                 })}
                                 autoComplete="off"
@@ -223,7 +223,7 @@ const W9AddEditModal = (props) => {
                       </div>
                     </div>
                     <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-4 sm:gap-3 sm:grid-flow-row-dense">
-                      {props.mode === "add" ? (
+                      {props.mode === 'add' ? (
                         <button
                           type="submit"
                           className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:col-start-3 sm:col-span-2 sm:text-sm"
@@ -238,7 +238,7 @@ const W9AddEditModal = (props) => {
                           Save
                         </button>
                       )}
-                      {props.mode === "edit" ? (
+                      {props.mode === 'edit' ? (
                         <>
                           <button
                             type="button"
@@ -260,7 +260,7 @@ const W9AddEditModal = (props) => {
                         <button
                           type="button"
                           ref={cancelButtonRef}
-                          className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                          className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 col-span-2 sm:text-sm"
                           onClick={handleModalClose}
                         >
                           Cancel
@@ -275,7 +275,7 @@ const W9AddEditModal = (props) => {
         </Dialog>
       </Transition.Root>
     </div>
-  );
-};
+  )
+}
 
-export default W9AddEditModal;
+export default W9AddEditModal

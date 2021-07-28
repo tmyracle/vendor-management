@@ -26,7 +26,7 @@ const CoiAddEditModal = (props) => {
     resolver: yupResolver(schema),
   })
 
-  let cancelButtonRef = useRef(null)
+  const cancelButtonRef = useRef(null)
 
   const handleS3Response = (s3Responses) => {
     setS3Responses(s3Responses)

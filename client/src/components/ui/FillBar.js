@@ -4,15 +4,15 @@ const FillBar = (props) => {
   const [bgColor, setBgColor] = useState('#fff')
   useEffect(() => {
     if (props.lowThreshold && props.percentNumber < props.lowThreshold) {
-      setBgColor('rgba(185, 28, 28, 1)')
+      setBgColor('rgba(239, 68, 68, 1)') // Red
     } else if (
       props.midThreshold &&
       props.percentNumber > props.lowThreshold &&
       props.percentNumber < props.midThreshold
     ) {
-      setBgColor('rgba(252, 211, 77, 1)')
+      setBgColor('rgba(253, 230, 138, 1)') // Yellow
     } else {
-      setBgColor('rgba(16, 185, 129, 1)')
+      setBgColor('rgba(16, 185, 129, 1)') // Green
     }
   }, [props])
 

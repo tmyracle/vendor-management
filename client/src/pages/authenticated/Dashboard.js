@@ -134,7 +134,7 @@ const Dashboard = () => {
                     </dt>
                     <dd className="mt-1 text-3xl font-semibold text-gray-900 mb-2">
                       {item.compliant} / {item.required}{' '}
-                      <span className="text-xl font-medium text-gray-400">
+                      <span className="text-lg font-medium text-gray-400">
                         vendors
                       </span>
                     </dd>
