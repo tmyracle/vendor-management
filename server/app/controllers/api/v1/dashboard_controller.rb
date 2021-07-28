@@ -31,7 +31,11 @@ module Api::V1
                     coi_required: vendor_requires_coi_count, 
                     coi_compliant: coi_compliant_count,
                     w9_required: vendor_requires_w9_count,
-                    w9_compliant: w9_compliant_count}
+                    w9_compliant: w9_compliant_count,
+                    user_name: @user.full_name,
+                    company_name: @user.companies.first.name,
+                    company_logo: @user.companies.first.logo_url
+                  }
     end
   end
 end
