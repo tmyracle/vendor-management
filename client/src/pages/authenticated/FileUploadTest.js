@@ -3,6 +3,7 @@ import axios from "axios";
 import { withToken } from "../../lib/authHandler";
 import toast from "react-hot-toast";
 import FileUploader from "../../components/FileUploader";
+import FillBar from "../../components/ui/FillBar";
 
 const Dashboard = () => {
   const [msaId, setMsaId] = useState(null);
@@ -44,6 +45,7 @@ const Dashboard = () => {
       <div className="mb-4">
         This is a throwaway page for testing file uploads
       </div>
+      <FillBar percentNumber={85} lowThreshold={30} midThreshold={70} />
       <p>let's upload a file</p>
       <div>
         <label
