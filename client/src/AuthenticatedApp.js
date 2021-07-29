@@ -19,6 +19,7 @@ import Navigation from './components/Navigation'
 import MobileNavigation from './components/MobileNavigation'
 import Dashboard from './pages/authenticated/Dashboard'
 import Team from './pages/authenticated/Team'
+import Settings from './pages/authenticated/Settings'
 import Projects from './pages/authenticated/Projects'
 import FileUploadTest from './pages/authenticated/FileUploadTest'
 import Vendors from './pages/authenticated/Vendors'
@@ -182,7 +183,7 @@ export default function AuthenticatedApp() {
                     <FileUploadTest />
                   </Route>{' '}
                   <Route path="/settings">
-                    <FileUploadTest />
+                    <Settings />
                   </Route>
                   <Route path="/*">
                     <Redirect to="/dashboard" />
