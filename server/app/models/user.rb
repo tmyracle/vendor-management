@@ -2,6 +2,7 @@ class User < ApplicationRecord
   has_secure_password  
   has_and_belongs_to_many :companies
   has_many :invitations
+  accepts_nested_attributes_for :companies
 
   attribute :status
 

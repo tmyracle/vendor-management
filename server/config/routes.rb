@@ -8,9 +8,10 @@ Rails.application.routes.draw do
       resources :msas
       resources :cois
       resources :w9s
-      resource :users, only: [:create]
+      resource :users, only: [:create, :update]
       post "/login", to: "users#login"
       get "/auto_login", to: "users#auto_login"
+      get "/current_user", to: "users#show_current_user"
       post "/password/forgot", to: "passwords#forgot"
       post "/password/reset", to: "passwords#reset"
       post "/invite", to: "invitations#invite"

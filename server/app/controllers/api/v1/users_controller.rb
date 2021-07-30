@@ -1,6 +1,6 @@
 module Api::V1
   class UsersController < ApplicationController
-    before_action :authorized, only: [:auto_login]
+    before_action :authorized, only: [:auto_login, :update, :show_current_user]
 
     # REGISTER
     def create
@@ -17,6 +17,21 @@ module Api::V1
         render json: {user: @user.as_json(include: [:companies]), token: token}, status: :ok
       else
         render json: {error: "Invalid email or password"}, status: :internal_server_error
+      end
+    end
+
+    def show_current_user
+      if @user.present?
+        render json: @user, status: :ok
+      else
+        render json: {message: "Error encountered."}, status: :internal_server_error
+      end
+    end
+
+    def update
+      if params[:full_name]
+        @user.update(update_params)
+        render json: @user, status: :ok
       end
     end
   
@@ -41,5 +56,10 @@ module Api::V1
     def user_params
       params.permit(:full_name, :email, :password, :company_name)
     end
+
+    def update_params
+      params.permit(:full_name, companies_attributes: [:id, :name, :logo]).select { |k,v| !v.nil? }
+    end
+
   end
 end
