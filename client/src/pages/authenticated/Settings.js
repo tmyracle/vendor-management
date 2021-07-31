@@ -10,6 +10,8 @@ import uploadToS3 from "../../lib/fileUpload";
 const schema = yup.object().shape({
   fullName: yup.string(),
   companyName: yup.string(),
+  changePassword: yup.string(),
+  changePasswordConfirm: yup.string(),
 });
 
 const Settings = () => {
@@ -34,6 +36,21 @@ const Settings = () => {
         },
       };
 
+      if (
+        data.changePassword.length > 0 &&
+        data.changePasswordConfirm.length > 0 &&
+        data.changePassword === data.changePasswordConfirm
+      ) {
+        payload.new_password = data.changePassword;
+      } else if (
+        data.changePassword.length > 0 &&
+        data.changePasswordConfirm.length > 0 &&
+        data.changePassword !== data.changePasswordConfirm
+      ) {
+        toast.error("Passwords must match");
+        return;
+      }
+
       if (logoRemoved === true || s3Response !== null) {
         payload.companies_attributes[company_id].logo = s3Response
           ? s3Response.blob_signed_id
@@ -48,6 +65,7 @@ const Settings = () => {
           companyName: res.data.companies[0].name,
         });
         toast.success("Account updated");
+        window.location.reload();
       }
     } catch {
       toast.error("Couldn't update account");
@@ -165,6 +183,34 @@ const Settings = () => {
                     </button>
                   </div>
                 </div>
+              </div>
+              <div className="sm:col-span-3">
+                <label
+                  htmlFor="full-name"
+                  className="block text-sm font-medium"
+                >
+                  Change password
+                </label>
+                <input
+                  type="password"
+                  {...register("changePassword")}
+                  autoComplete="off"
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div className="sm:col-span-3">
+                <label
+                  htmlFor="full-name"
+                  className="block text-sm font-medium"
+                >
+                  Confirm new password
+                </label>
+                <input
+                  type="password"
+                  {...register("changePasswordConfirm")}
+                  autoComplete="off"
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                />
               </div>
             </div>
 

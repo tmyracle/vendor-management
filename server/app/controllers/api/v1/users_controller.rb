@@ -29,6 +29,10 @@ module Api::V1
     end
 
     def update
+      if params[:new_password].present?
+        @user.reset_password!(params[:new_password])
+      end
+
       if params[:full_name]
         @user.update(update_params)
         render json: @user, status: :ok
@@ -58,7 +62,7 @@ module Api::V1
     end
 
     def update_params
-      params.permit(:full_name, companies_attributes: [:id, :name, :logo]).select { |k,v| !v.nil? }
+      params.permit(:full_name, companies_attributes: [:id, :name, :logo, :new_password]).select { |k,v| !v.nil? }
     end
 
   end
