@@ -1,23 +1,25 @@
-import React from "react";
+import React from 'react'
 
 const StripedTable = (props) => {
-  const columnNames = props.columnNames;
-  const tableData = props.tableData;
-  const dataEditable = props.dataEditable;
+  const columnNames = props.columnNames
+  const tableData = props.tableData
+  const dataEditable = props.dataEditable
 
   const formatField = (data, dataType) => {
-    let formattedData = data;
-    if (dataType === "date") {
-      formattedData = new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "2-digit",
-      }).format(new Date(data));
-    } else if (dataType === "uppercaseText") {
-      formattedData = data.charAt(0).toUpperCase() + data.slice(1);
+    let formattedData = data
+    if (dataType === 'date') {
+      formattedData = new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+      }).format(new Date(data))
+    } else if (dataType === 'capitalizedText') {
+      formattedData = data.charAt(0).toUpperCase() + data.slice(1)
+    } else if (dataType === 'uppercaseText') {
+      formattedData = data.toUpperCase()
     }
-    return formattedData;
-  };
+    return formattedData
+  }
 
   return (
     <div className="flex flex-col">
@@ -47,7 +49,7 @@ const StripedTable = (props) => {
                 {tableData.map((item, itemIdx) => (
                   <tr
                     key={item.id}
-                    className={itemIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                    className={itemIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {item[columnNames[0].field]}
@@ -59,7 +61,7 @@ const StripedTable = (props) => {
                       >
                         {formatField(
                           item[columnName.field],
-                          columnName.dataType
+                          columnName.dataType,
                         )}
                       </td>
                     ))}
@@ -81,7 +83,7 @@ const StripedTable = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default StripedTable;
+export default StripedTable

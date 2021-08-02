@@ -19,4 +19,8 @@ class Coi < ApplicationRecord
       User.find(uploaded_by).full_name
     end
   end
+
+  def vendor_name
+    vendor.name
+  end
 end

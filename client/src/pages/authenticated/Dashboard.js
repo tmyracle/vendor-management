@@ -4,12 +4,21 @@ import { withToken } from '../../lib/authHandler'
 import FillBar from '../../components/ui/FillBar'
 import toast from 'react-hot-toast'
 import { OfficeBuildingIcon, CheckCircleIcon } from '@heroicons/react/solid'
+import StripedTable from '../../components/StripedTable'
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null)
+  const [documents, setDocuments] = useState(null)
   const [userName, setUserName] = useState(null)
   const [companyName, setCompanyName] = useState(null)
   const [companyLogo, setCompanyLogo] = useState(null)
+
+  const columnNames = [
+    { displayName: 'Vendor', field: 'vendor_name', dataType: 'text' },
+    { displayName: 'Type', field: 'type', dataType: 'uppercaseText' },
+    { displayName: 'Uploaded by', field: 'uploader', dataType: 'text' },
+    { displayName: 'Last updated', field: 'updated_at', dataType: 'date' },
+  ]
 
   const fetchDashboardData = useCallback(async (isMounted) => {
     try {
@@ -26,6 +35,11 @@ const Dashboard = () => {
     setUserName(data.user_name)
     setCompanyName(data.company_name)
     setCompanyLogo(data.company_logo)
+
+    let sortedDocs = data.documents.sort((a, b) => {
+      return new Date(b.updated_at) - new Date(a.updated_at)
+    })
+    setDocuments(sortedDocs.slice(0, 10))
 
     let stats = [
       {
@@ -119,7 +133,7 @@ const Dashboard = () => {
             </div>
           </div>
           {stats ? (
-            <>
+            <div className="mb-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
                 Compliance
               </h3>
@@ -146,7 +160,19 @@ const Dashboard = () => {
                   </div>
                 ))}
               </dl>
-            </>
+            </div>
+          ) : null}
+          {documents ? (
+            <div>
+              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                Recent documents
+              </h3>
+              <StripedTable
+                columnNames={columnNames}
+                tableData={documents}
+                dataEditable={false}
+              />
+            </div>
           ) : null}
         </>
       ) : null}

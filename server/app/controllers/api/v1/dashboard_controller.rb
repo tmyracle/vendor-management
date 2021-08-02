@@ -24,6 +24,20 @@ module Api::V1
         vendor.w9_compliant ? w9_compliant_count += 1 : nil
       end
 
+      msas = @user.companies.first.msas.map do |msa|
+        MsaSerializer.new(msa)
+      end
+
+      cois = @user.companies.first.cois.map do |coi|
+        CoiSerializer.new(coi)
+      end
+
+      w9s = @user.companies.first.w9s.map do |w9|
+        W9Serializer.new(w9)
+      end
+
+      docs = msas + cois + w9s
+
       render json: {vendor_count: vendor_count, 
                     compliant: compliant_vendor_count,
                     msa_required: vendor_requires_msa_count, 
@@ -34,7 +48,8 @@ module Api::V1
                     w9_compliant: w9_compliant_count,
                     user_name: @user.full_name,
                     company_name: @user.companies.first.name,
-                    company_logo: @user.companies.first.logo_url
+                    company_logo: @user.companies.first.logo_url,
+                    documents: docs
                   }
     end
   end

@@ -17,7 +17,7 @@ const FillBar = (props) => {
   }, [props])
 
   return (
-    <div className="w-full h-4 border border-gray-300 rounded-lg bg-white shadow-sm">
+    <div className="w-full h-4 border border-gray-200 rounded-lg bg-white shadow-sm">
       <div
         id="inner-bar"
         style={{

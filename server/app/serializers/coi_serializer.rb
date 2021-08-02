@@ -1,5 +1,5 @@
 class CoiSerializer < ActiveModel::Serializer
-  attributes :id, :policy_effective, :policy_expires, :vendor_id, :uploaded_by, :updated_at, :document_url, :document_name, :uploader
+  attributes :id, :policy_effective, :policy_expires, :vendor_id, :uploaded_by, :updated_at, :document_url, :document_name, :uploader, :vendor_name, :type
 
   def document_url
     object.document_url
@@ -11,5 +11,13 @@ class CoiSerializer < ActiveModel::Serializer
 
   def uploader
     object.uploader
+  end
+
+  def vendor_name
+    object.vendor_name
+  end
+
+  def type
+    object.class.name
   end
 end
