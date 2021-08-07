@@ -52,7 +52,7 @@ module Api::V1
     end
   
     def auto_login
-      render json: {user: @user.as_json(include: [{:companies => {methods: :logo_url}}]).except("password_digest"), isAuthenticated: true}
+      render json: {user: UserSerializer.new(@user), isAuthenticated: true}
     end
   
     private

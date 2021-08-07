@@ -1,11 +1,11 @@
-import React, { useEffect, useState, Fragment } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState, useContext, Fragment } from "react";
+import axios from "axios";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
-} from 'react-router-dom'
+} from "react-router-dom";
 import {
   HomeIcon,
   MenuAlt2Icon,
@@ -13,56 +13,59 @@ import {
   BriefcaseIcon,
   XIcon,
   CogIcon,
-} from '@heroicons/react/outline'
-import { Dialog, Transition } from '@headlessui/react'
-import Navigation from './components/Navigation'
-import MobileNavigation from './components/MobileNavigation'
-import Dashboard from './pages/authenticated/Dashboard'
-import Team from './pages/authenticated/Team'
-import Settings from './pages/authenticated/Settings'
-import Projects from './pages/authenticated/Projects'
-import FileUploadTest from './pages/authenticated/FileUploadTest'
-import Vendors from './pages/authenticated/Vendors'
-import { withToken } from './lib/authHandler'
-import toast from 'react-hot-toast'
+} from "@heroicons/react/outline";
+import { Dialog, Transition } from "@headlessui/react";
+import Navigation from "./components/Navigation";
+import MobileNavigation from "./components/MobileNavigation";
+import Dashboard from "./pages/authenticated/Dashboard";
+import Team from "./pages/authenticated/Team";
+import Settings from "./pages/authenticated/Settings";
+import Projects from "./pages/authenticated/Projects";
+import FileUploadTest from "./pages/authenticated/FileUploadTest";
+import Vendors from "./pages/authenticated/Vendors";
+import { useAuth, withToken } from "./lib/authHandler";
+import toast from "react-hot-toast";
 
 const navigation = [
-  { name: 'Dashboard', icon: HomeIcon, href: '/dashboard', current: true },
+  { name: "Dashboard", icon: HomeIcon, href: "/dashboard", current: true },
   {
-    name: 'Vendors',
+    name: "Vendors",
     icon: BriefcaseIcon,
-    href: '/vendors',
+    href: "/vendors",
     current: false,
   },
-  { name: 'Team', icon: UsersIcon, href: '/team', current: false },
-  { name: 'Settings', icon: CogIcon, href: '/settings', current: false },
-]
+  { name: "Team", icon: UsersIcon, href: "/team", current: false },
+  { name: "Settings", icon: CogIcon, href: "/settings", current: false },
+];
 
 export default function AuthenticatedApp() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [user, setUser] = useState()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState();
+  const { clearAuth, clearUser } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    window.location.replace('/')
-  }
+    clearAuth();
+    clearUser();
+    localStorage.removeItem("token");
+    window.location.replace("/");
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get('/api/v1/auto_login', withToken())
+        const res = await axios.get("/api/v1/auto_login", withToken());
         if (res.data.isAuthenticated) {
-          setUser(res.data.user)
+          setCurrentUser(res.data.user);
         }
       } catch (error) {
-        toast.error('Something went wrong.')
+        toast.error("Something went wrong.");
       }
-    }
-    fetchUser()
-  }, [])
+    };
+    fetchUser();
+  }, []);
 
-  if (!user) {
-    return <div>Loading...</div>
+  if (!currentUser) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -145,7 +148,7 @@ export default function AuthenticatedApp() {
           <div className="flex flex-col w-64">
             {/* Sidebar component, swap this element with another sidebar if you like */}
             <Navigation
-              user={user}
+              user={currentUser}
               navigation={navigation}
               handleLogout={handleLogout}
             />
@@ -167,21 +170,21 @@ export default function AuthenticatedApp() {
               <div className="mx-auto">
                 {/* Replace with your content */}
                 <Switch>
-                  <Route path="/dashboard">
-                    <Dashboard user={user} />
+                  <Route path="/dashboard" onEnter>
+                    <Dashboard user={currentUser} />
                   </Route>
                   <Route path="/vendors">
                     <Vendors />
                   </Route>
                   <Route path="/team">
-                    <Team user={user} />
+                    <Team user={currentUser} />
                   </Route>
                   <Route path="/projects">
                     <Projects />
                   </Route>
                   <Route path="/file_upload_test">
                     <FileUploadTest />
-                  </Route>{' '}
+                  </Route>{" "}
                   <Route path="/settings">
                     <Settings />
                   </Route>
@@ -196,5 +199,5 @@ export default function AuthenticatedApp() {
         </div>
       </div>
     </Router>
-  )
+  );
 }

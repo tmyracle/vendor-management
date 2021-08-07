@@ -30,12 +30,10 @@ const Dashboard = () => {
         withToken()
       );
       if (res.status === 200) {
-        console.log(res);
         setFileUrl(res.data.document_url);
         toast.success("File uploaded!", { id: toastId });
       }
     } catch (err) {
-      console.log("Error trying to update vendor");
       toast.error("Error uploading file", { id: toastId });
     }
   };

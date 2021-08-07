@@ -18,7 +18,6 @@ export const ContactDeleteConfirmation = (props) => {
       );
       if (res.status === 200) {
         toast.success("Vendor successfully deleted.");
-        //props.fetchVendor(true);
         setOpen(false);
       }
     } catch (err) {

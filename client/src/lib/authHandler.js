@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         setIsAuthenticated(false);
+        setUser(null);
       }
     };
     initAuth();
@@ -29,6 +30,8 @@ export const AuthProvider = ({ children }) => {
       value={{
         isAuthenticated,
         user,
+        clearAuth: () => setIsAuthenticated(false),
+        clearUser: () => setUser(null),
       }}
     >
       {children}
