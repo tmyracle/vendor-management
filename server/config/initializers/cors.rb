@@ -5,9 +5,11 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
+# TODO: Update CORS to account for dev and prod
+
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins '*'
+    origins 'http://localhost:3000'
 
     resource '*',
       headers: :any,
