@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3001",
+  "proxy": "http://localhost:3010",
   "dependencies": {
     "@blueprintjs/core": "^3.47.0",
     "@blueprintjs/datetime": "^3.23.6",

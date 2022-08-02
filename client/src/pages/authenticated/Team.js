@@ -1,83 +1,90 @@
-import React, { Fragment, useState, useEffect, useCallback } from 'react'
-import axios from 'axios'
-import { withToken } from './../../lib/authHandler'
-import StripedTable from '../../components/StripedTable'
-import { MailIcon } from '@heroicons/react/solid'
-import { Dialog, Transition } from '@headlessui/react'
-import { PaperAirplaneIcon } from '@heroicons/react/outline'
-import toast from 'react-hot-toast'
+import React, { Fragment, useState, useEffect, useCallback } from "react";
+import axios from "axios";
+import { withToken } from "./../../lib/authHandler";
+import StripedTable from "../../components/StripedTable";
+import { MailIcon } from "@heroicons/react/solid";
+import { Dialog, Transition } from "@headlessui/react";
+import { PaperAirplaneIcon } from "@heroicons/react/outline";
+import toast from "react-hot-toast";
 
 const Team = (props) => {
-  const [company, setCompany] = useState(props.user.companies[0])
-  const [inviteModalOpen, setInviteModalOpen] = useState(false)
-  const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [company, setCompany] = useState(props.user.companies[0]);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const columnNames = [
-    { displayName: 'Name', field: 'full_name', dataType: 'text' },
-    { displayName: 'Email', field: 'email', dataType: 'text' },
-    { displayName: 'Joined', field: 'created_at', dataType: 'date' },
-    { displayName: 'Status', field: 'status', dataType: 'capitalizedText' },
-  ]
+    { displayName: "Name", field: "full_name", dataType: "text" },
+    { displayName: "Email", field: "email", dataType: "text" },
+    { displayName: "Joined", field: "created_at", dataType: "date" },
+    { displayName: "Status", field: "status", dataType: "capitalizedText" },
+  ];
 
   const toggleInviteModal = () => {
-    setInviteModalOpen(!inviteModalOpen)
-  }
+    setInviteModalOpen(!inviteModalOpen);
+  };
 
   const handleFullNameChange = (e) => {
-    setFullName(e.target.value)
-  }
+    setFullName(e.target.value);
+  };
 
   const handleEmailChange = (e) => {
-    setEmail(e.target.value)
-  }
+    setEmail(e.target.value);
+  };
 
   const fetchCompany = useCallback(async (companyId, isMounted) => {
     try {
-      const res = await axios.get(`/api/v1/companies/${companyId}`, withToken())
+      const res = await axios.get(
+        `/api/v1/companies/${companyId}`,
+        withToken()
+      );
       if (res.status === 200 && isMounted) {
-        setCompany(res.data.company)
+        setCompany(res.data.company);
       }
     } catch (error) {
-      toast.error('Error fetching team members')
+      toast.error("Error fetching team members");
     }
-  }, [])
+  }, []);
 
   const handleInviteSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const invitePayload = {
       full_name: fullName,
       email: email,
-    }
+    };
 
     try {
-      const res = await axios.post('/api/v1/invite', invitePayload, withToken())
+      const res = await axios.post(
+        "/api/v1/invite",
+        invitePayload,
+        withToken()
+      );
       if (res.status === 200) {
-        toggleInviteModal()
-        fetchCompany(company.id, true)
+        toggleInviteModal();
+        fetchCompany(company.id, true);
       }
     } catch (err) {
       if (err.response.data.message) {
-        setErrorMessage(err.response.data.message)
+        setErrorMessage(err.response.data.message);
       } else {
-        setErrorMessage('Something went wrong.')
+        setErrorMessage("Something went wrong.");
       }
     }
-  }
+  };
 
   useEffect(() => {
-    let isMounted = true
-    fetchCompany(company.id, isMounted)
+    let isMounted = true;
+    fetchCompany(company.id, isMounted);
     return () => {
-      isMounted = false
-    }
-  }, [company.id, fetchCompany])
+      isMounted = false;
+    };
+  }, [company.id, fetchCompany]);
 
   return (
-    <div className="mt-8 p-8 max-w-7xl mx-auto">
+    <div className="p-8 max-w-7xl mx-auto">
       <div className="flex justify-between">
-        <div className="mb-4 text-3xl font-extrabold text-gray-900 inline">
+        <div className="mb-4 text-2xl font-semibold text-gray-900 inline">
           {company.name}
         </div>
         <div className="flex inline justify-end mb-4">
@@ -222,7 +229,7 @@ const Team = (props) => {
         </Dialog>
       </Transition.Root>
     </div>
-  )
-}
+  );
+};
 
-export default Team
+export default Team;

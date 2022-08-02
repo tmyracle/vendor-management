@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       resources :msas
       resources :cois
       resources :w9s
+      resources :line_items    
       resource :users, only: [:create, :update]
       post "/login", to: "users#login"
       get "/auto_login", to: "users#auto_login"

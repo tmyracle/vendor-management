@@ -5,6 +5,7 @@ class Company < ApplicationRecord
   has_many :msas, through: :vendors
   has_many :cois, through: :vendors
   has_many :w9s, through: :vendors
+  has_many :line_items
 
   def logo_url
     if logo.attached?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_16_170559) do
+ActiveRecord::Schema.define(version: 2022_08_02_003659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,17 @@ ActiveRecord::Schema.define(version: 2021_07_16_170559) do
     t.index ["user_id"], name: "index_invitations_on_user_id"
   end
 
+  create_table "line_items", force: :cascade do |t|
+    t.string "description"
+    t.decimal "unit_price", precision: 10, scale: 2
+    t.string "unit"
+    t.bigint "company_id", null: false
+    t.string "identifier"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_id"], name: "index_line_items_on_company_id"
+  end
+
   create_table "msas", force: :cascade do |t|
     t.bigint "vendor_id", null: false
     t.integer "status"
@@ -131,6 +142,7 @@ ActiveRecord::Schema.define(version: 2021_07_16_170559) do
   add_foreign_key "cois", "vendors"
   add_foreign_key "contacts", "vendors"
   add_foreign_key "invitations", "users"
+  add_foreign_key "line_items", "companies"
   add_foreign_key "msas", "vendors"
   add_foreign_key "vendors", "companies"
   add_foreign_key "w9s", "vendors"

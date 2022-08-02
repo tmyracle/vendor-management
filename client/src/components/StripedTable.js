@@ -17,6 +17,8 @@ const StripedTable = (props) => {
       formattedData = data.charAt(0).toUpperCase() + data.slice(1);
     } else if (dataType === "uppercaseText") {
       formattedData = data.toUpperCase();
+    } else if (dataType === "currency") {
+      formattedData = `$${data.toString()}`;
     }
     return formattedData;
   };

@@ -13,6 +13,7 @@ import {
   BriefcaseIcon,
   XIcon,
   CogIcon,
+  CreditCardIcon,
 } from "@heroicons/react/outline";
 import { Dialog, Transition } from "@headlessui/react";
 import Navigation from "./components/Navigation";
@@ -25,6 +26,7 @@ import FileUploadTest from "./pages/authenticated/FileUploadTest";
 import Vendors from "./pages/authenticated/Vendors";
 import { useAuth, withToken } from "./lib/authHandler";
 import toast from "react-hot-toast";
+import Pricebook from "./pages/authenticated/Pricebook";
 
 const navigation = [
   { name: "Dashboard", icon: HomeIcon, href: "/dashboard", current: true },
@@ -35,6 +37,12 @@ const navigation = [
     current: false,
   },
   { name: "Team", icon: UsersIcon, href: "/team", current: false },
+  {
+    name: "Pricebook",
+    icon: CreditCardIcon,
+    href: "/pricebook",
+    current: false,
+  },
   { name: "Settings", icon: CogIcon, href: "/settings", current: false },
 ];
 
@@ -178,6 +186,9 @@ export default function AuthenticatedApp() {
                   </Route>
                   <Route path="/team">
                     <Team user={currentUser} />
+                  </Route>
+                  <Route path="/pricebook">
+                    <Pricebook />
                   </Route>
                   <Route path="/projects">
                     <Projects />
