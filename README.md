@@ -4,7 +4,9 @@
 
 This is a basic SaaS app to let companies manage their vendors. It's purpose is to give me something to work on to
 make sure I don't forget how to build things. It also allows me to learn new things and give me something to tinker on
-since I don't think it'll ever be "done".
+since I don't think it'll ever be "done".  
+
+This app allows companies to track important documents for each of their suppliers -- specifically certificates of insurance, master service agreements, and W9s.  
 
 ## Learning
 
